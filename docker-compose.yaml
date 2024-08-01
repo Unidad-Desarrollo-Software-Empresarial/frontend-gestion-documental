@@ -1,10 +1,10 @@
 version: '3.8'
 
 services:
-  dev-frontend-gestion-documental:
-    container_name: dev-frontend-gestion-documental
+  qa-frontend-gestion-documental:
+    container_name: qa-frontend-gestion-documental
     build: .
     restart: on-failure
     ports:
-      - 10006:80
+      - 10007:80
 
