@@ -182,20 +182,20 @@
   dependencies:
     remove-accents "0.5.0"
 
-"@tanstack/query-core@5.40.0":
-  version "5.40.0"
-  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.40.0.tgz"
-  integrity sha512-eD8K8jsOIq0Z5u/QbvOmfvKKE/XC39jA7yv4hgpl/1SRiU+J8QCIwgM/mEHuunQsL87dcvnHqSVLmf9pD4CiaA==
+"@tanstack/query-core@5.51.17":
+  version "5.51.17"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.51.17.tgz"
+  integrity sha512-AtVNOgVrZNz4C7RzMfx7sCn1/gf0Ype4nX8UP2BOh0C2tTMszwXk98iCLRacTn5vTRNJCZxz3fgEcTJq0uv8GQ==
 
-"@tanstack/vue-query@^5.40.0":
-  version "5.40.0"
-  resolved "https://registry.npmjs.org/@tanstack/vue-query/-/vue-query-5.40.0.tgz"
-  integrity sha512-gETTW0n9QK9lw8aXtk5WPHdGEvGh+xb/+FH6QXK/g1A+6vUeGAKoocPK39N9IMQgKR/lirW20IIo6+WmnHBHvQ==
+"@tanstack/vue-query@^5.51.17":
+  version "5.51.17"
+  resolved "https://registry.npmjs.org/@tanstack/vue-query/-/vue-query-5.51.17.tgz"
+  integrity sha512-7c8s0YJsggDhSNrFuPPJXpRiCNZ6KXJXyQvqk+forouNjnVBq0WQDoeDMicPnHeHdO68Vq/VtzB4qQKJEW3DNg==
   dependencies:
     "@tanstack/match-sorter-utils" "^8.15.1"
-    "@tanstack/query-core" "5.40.0"
-    "@vue/devtools-api" "^6.5.1"
-    vue-demi "^0.14.7"
+    "@tanstack/query-core" "5.51.17"
+    "@vue/devtools-api" "^6.6.3"
+    vue-demi "^0.14.10"
 
 "@tsconfig/node20@^20.1.4":
   version "20.1.4"
@@ -427,10 +427,10 @@
     "@vue/compiler-dom" "3.4.27"
     "@vue/shared" "3.4.27"
 
-"@vue/devtools-api@^6.5.0", "@vue/devtools-api@^6.5.1":
-  version "6.6.1"
-  resolved "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.6.1.tgz"
-  integrity sha512-LgPscpE3Vs0x96PzSSB4IGVSZXZBZHpfxs+ZA1d+VEPwHdOXowy/Y2CsvCAIFrf+ssVU1pD1jidj505EpUnfbA==
+"@vue/devtools-api@^6.5.0", "@vue/devtools-api@^6.5.1", "@vue/devtools-api@^6.6.3":
+  version "6.6.3"
+  resolved "https://registry.npmjs.org/@vue/devtools-api/-/devtools-api-6.6.3.tgz"
+  integrity sha512-0MiMsFma/HqA6g3KLKn+AGpL1kgKhFWszC9U29NfpWK5LE7bjeXxySWJrOJ77hBz+TBrBQ7o4QJqbPbqbs8rJw==
 
 "@vue/eslint-config-prettier@^9.0.0":
   version "9.0.0"
@@ -2575,10 +2575,10 @@ vue-component-type-helpers@^2.0.0:
   resolved "https://registry.npmjs.org/vue-component-type-helpers/-/vue-component-type-helpers-2.0.19.tgz"
   integrity sha512-cN3f1aTxxKo4lzNeQAkVopswuImUrb5Iurll9Gaw5cqpnbTAxtEMM1mgi6ou4X79OCyqYv1U1mzBHJkzmiK82w==
 
-vue-demi@^0.14.7:
-  version "0.14.8"
-  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.14.8.tgz"
-  integrity sha512-Uuqnk9YE9SsWeReYqK2alDI5YzciATE0r2SkA6iMAtuXvNTMNACJLJEXNXaEy94ECuBe4Sk6RzRU80kjdbIo1Q==
+vue-demi@^0.14.10:
+  version "0.14.10"
+  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.14.10.tgz"
+  integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==
 
 vue-demi@>=0.14.5:
   version "0.14.7"
