@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  main-frontend-aprehenser:
+    container_name: main-frontend-aprehenser
+    build: .
+    restart: on-failure
+    ports:
+      - 10004:80
+
