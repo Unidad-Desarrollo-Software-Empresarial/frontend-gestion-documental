@@ -4,7 +4,7 @@
       <button
         type="button"
         class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
-        @click="toggleAccordion(bodyId)"
+        @click="handleClick"
         :aria-expanded="isExpanded"
         :aria-controls="bodyId"
       >
@@ -24,9 +24,9 @@
     <div
       :id="bodyId"
       :class="{ hidden: !isExpanded }"
-      :aria-labelledby="headingId"
+      aria-labelledby="headingId"
     >
-      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-800">
         <slot></slot>
       </div>
     </div>
@@ -34,17 +34,23 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps<{
   title: string;
   isExpanded: boolean;
   headingId: string;
   bodyId: string;
-  toggleAccordion: (id: string) => void;
 }>();
+
+const emit = defineEmits<{
+  (e: 'toggle'): void;
+}>();
+
+function handleClick() {
+  emit('toggle');
+}
 </script>
 
 <style scoped>
-
 </style>

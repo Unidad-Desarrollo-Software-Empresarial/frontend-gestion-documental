@@ -1,37 +1,28 @@
-// src/composables/useExpedienteAcademico.ts
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 
+// Definición de tipos
+interface AcademicPeriod {
+  title: string;
+  content: string;
+}
+
+// Composable para manejar la lógica de expediente académico
 export function useExpedienteAcademico() {
-  const periods = ref<string[]>([]);
-  const selectedPeriod = ref<string>('');
-  const academicPeriods = ref<Array<{ title: string; content: string }>>([]);
-  const identityNumber = ref<string>('');
+  const academicPeriods = ref<AcademicPeriod[]>([]);
   const isExpanded = ref<Record<string, boolean>>({
     'accordion-collapse-body-1': false,
     'accordion-collapse-body-2': false
   });
 
-  // Fetch periods from the backend
-  async function fetchPeriods() {
+  async function fetchAcademicPeriods(period: string): Promise<AcademicPeriod[]> {
     try {
-      const response = await axios.get('/api/periods'); // Cambia la URL según sea necesario
-      periods.value = response.data;
-      selectedPeriod.value = periods.value[0];
-    } catch (error) {
-      console.error('Error fetching periods:', error);
-    }
-  }
-
-  // Fetch academic periods from the backend
-  async function fetchAcademicPeriods() {
-    if (!selectedPeriod.value) return;
-
-    try {
-      const response = await axios.get(`/api/academic-periods/${selectedPeriod.value}`); // Cambia la URL según sea necesario
-      academicPeriods.value = response.data;
+      // Aquí va la llamada a la API que debe devolver los datos de academicPeriods
+      const response = await axios.get(`/api/academic-periods?period=${period}`);
+      return response.data; // Asegúrate de que el tipo devuelto coincida con AcademicPeriod[]
     } catch (error) {
       console.error('Error fetching academic periods:', error);
+      return []; // Devuelve un arreglo vacío en caso de error
     }
   }
 
@@ -39,17 +30,10 @@ export function useExpedienteAcademico() {
     isExpanded.value[accordionId] = !isExpanded.value[accordionId];
   }
 
-  onMounted(() => {
-    fetchPeriods();
-  });
-
   return {
-    periods,
-    selectedPeriod,
     academicPeriods,
-    identityNumber,
     isExpanded,
-    toggleAccordion,
-    fetchAcademicPeriods
+    fetchAcademicPeriods,
+    toggleAccordion
   };
 }
