@@ -1,68 +1,39 @@
-import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 <template>
-    <DashboardLayout>
-        <div class="flex justify-between">
-            <div>
-                <h2 class="text-2xl font-bold">Titulación de Carreras</h2>
-            </div>
-         
-        </div>
-        <div>
-            <CustomDataTable :data="query.data.value" @update-row="openModalToUpdate" />
-        </div>
-        <CreateUpdateEspecificacionModal :open="openCreateUpdateModal" :item-update="itemUpdate" @close="closeModal" />
-        
-        <div v-if="showSecondTable">
-            <div class="flex justify-between mt-4">
-                <div>
-                    <h2 class="text-2xl font-bold">Titulación:</h2>
-                </div>
-            </div>
-            <div>
-                <CustomDataTable :data="query.data.value" @update-row="openModalToUpdate" />
-            </div>
-            <CreateUpdateEspecificacionModal :open="openCreateUpdateModal" :item-update="itemUpdate" @close="closeModal" />
-        </div>
-    </DashboardLayout>
+  <DashboardLayout>
+    <div>
+      <DataDemo :data="myData" @updateRow="handleView" />
+    </div>
+
+    <!-- DataTableTitulacion -->
+    <div>
+      <DataDemo v-if="showDataDemo" :data="dataTitulo" />
+    </div>
+  </DashboardLayout>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
-import CustomDataTable from '@/modules/titulacion/components/DataTableTitulacion.vue'
-import CreateUpdateEspecificacionModal from '../components/CreateUpdateEspecificacionModal.vue'
+import DataDemo from '../components/DataDemo.vue';
+import { myData, dataTitulo } from '../dto/myData';
 
-import { ref, watch } from 'vue';
-import { useGetVinculacionEspecificaciones } from '../composables/use-especificaciones';
+// Definir propiedades reactivas
+const showDataDemo = ref(false);
 
+// Manejar el evento 'updateRow'
+const handleView = (emitId: number) => {
+  console.log('ID recibido:', emitId);
 
-const openCreateUpdateModal = ref(false)
-const query = useGetVinculacionEspecificaciones()
-const itemUpdate = ref()
+  // Aquí debes determinar cómo obtener la fila correspondiente con base en emitId
+  const row = dataTitulo.find(item => item.numero === emitId);
 
-const openModalToUpdate = (id: number) => {
-    itemUpdate.value = id
-}
-const closeModal = () => {
-    openCreateUpdateModal.value = false
-}
-
-const openModalToCreate = () => {
-    openCreateUpdateModal.value = true
-    itemUpdate.value = null
-}
-watch(itemUpdate, (newValue) => {
-    itemUpdate.value = newValue
-    openCreateUpdateModal.value = true
-})
-const openTable = () => {
-    openCreateUpdateModal.value = true
-    itemUpdate.value = null
-}
-const showSecondTable = ref(false);
-
-const toggleTable = () => {
-    showSecondTable.value = !showSecondTable.value;
+  if (row) {
+    console.log('Datos recibidos:', row);
+    //selectedRow.value = row;
+    showDataDemo.value = true;
+  } else {
+    showDataDemo.value = false;
+  }
 };
 </script>
-
-<style scoped></style>
+<style></style>
