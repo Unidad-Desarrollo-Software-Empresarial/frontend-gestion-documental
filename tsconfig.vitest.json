@@ -11,5 +11,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.vue",
+    "src/modules/expediente/pages/IntroductionPage.vue"  // Add this line
   ]
 }

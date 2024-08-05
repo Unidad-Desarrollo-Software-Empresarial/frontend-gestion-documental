@@ -1,56 +1,42 @@
 <template>
-  <div>
-    <h2 :id="headingId">
-      <button
-        type="button"
-        class="flex items-center justify-between w-full p-5 font-medium text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
-        @click="handleClick"
-        :aria-expanded="isExpanded"
-        :aria-controls="bodyId"
-      >
-        <span>{{ title }}</span>
-        <svg
-          class="w-3 h-3 transition-transform duration-200"
-          :class="{ 'rotate-180': isExpanded }"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 10 6"
-        >
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
-        </svg>
-      </button>
-    </h2>
-    <div
-      :id="bodyId"
-      :class="{ hidden: !isExpanded }"
-      aria-labelledby="headingId"
-    >
-      <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-        <slot></slot>
-      </div>
+  <div class="accordion">
+    <button @click="toggle" class="accordion-header">
+      {{ title }}
+    </button>
+    <div v-show="isOpen" class="accordion-body">
+      <slot></slot>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue';
+<script setup lang="ts">
+import { ref, defineProps } from 'vue';
 
 const props = defineProps<{
   title: string;
-  isExpanded: boolean;
-  headingId: string;
-  bodyId: string;
 }>();
 
-const emit = defineEmits<{
-  (e: 'toggle'): void;
-}>();
+const title = props.title; // Usar `title` en el template
 
-function handleClick() {
-  emit('toggle');
-}
+const isOpen = ref(false);
+
+const toggle = () => {
+  isOpen.value = !isOpen.value;
+};
 </script>
 
 <style scoped>
+.accordion {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.accordion-header {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.accordion-body {
+  padding: 10px;
+}
 </style>
