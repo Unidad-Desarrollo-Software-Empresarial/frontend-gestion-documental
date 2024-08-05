@@ -8,7 +8,7 @@ export const mockData: Expediente[] = [
     descripcion: 'Descripción de la subserie A1',
     origen: 'Digital',
     condiciones: 'Público',
-    periodo: '2022-2023'
+    period: '2022-2023'
   },
   {
     numeracion: '002',
@@ -17,7 +17,7 @@ export const mockData: Expediente[] = [
     descripcion: 'Descripción de la subserie B1',
     origen: 'Físico',
     condiciones: 'Confidencial',
-    periodo: '2023-2024'
+    period: '2022-2023'
   },
   // Agrega más datos según sea necesario
 ];

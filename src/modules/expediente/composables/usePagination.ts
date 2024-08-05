@@ -1,13 +1,17 @@
-import { computed } from 'vue';
+import { computed, type Ref } from 'vue';
 
-const usePagination = (data: any[], currentPage: any, rowsPerPage: any) => {
+const usePagination = (
+  data: Ref<any[]>, 
+  currentPage: Ref<number>, 
+  rowsPerPage: Ref<number>
+) => {
   const paginatedItems = computed(() => {
     const start = (currentPage.value - 1) * rowsPerPage.value;
     const end = start + rowsPerPage.value;
-    return data.slice(start, end);
+    return data.value.slice(start, end);
   });
 
-  const totalPages = computed(() => Math.ceil(data.length / rowsPerPage.value));
+  const totalPages = computed(() => Math.ceil(data.value.length / rowsPerPage.value));
 
   const nextPage = () => {
     if (currentPage.value < totalPages.value) {

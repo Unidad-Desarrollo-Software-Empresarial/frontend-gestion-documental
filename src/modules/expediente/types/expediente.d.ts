@@ -5,5 +5,5 @@ export interface Expediente {
   descripcion: string;
   origen: 'Físico' | 'Electrónico' | 'Digital' | 'Híbrido';
   condiciones: 'Público' | 'Confidencial' | 'Reservado' | 'Privado';
-  periodo: string;
+  period: string;
 }

@@ -1,17 +1,32 @@
 <template>
   <DashboardLayout>
-    <div class="p-4">
+    <div class="p-4 space-y-4">
       <!-- Selector de periodo -->
-      <CustomPeriodSelector :periods="periods" :modelValue="selectedPeriod" @update:modelValue="updatePeriod" />
+      <CustomPeriodSelector 
+        :periods="periods" 
+        v-model:modelValue="selectedPeriod" 
+        @update:modelValue="updatePeriod" 
+      />
       
       <!-- Acordeón que contiene la tabla de datos -->
       <CustomAccordion title="Detalles del Expediente">
         <CustomDataTable
-          :data="filteredData"
+          :data="paginatedItems" 
           :columns="columns"
           :actionsVisible="true"
           @edit-item="editItem"
         />
+        
+        <!-- Paginación -->
+        <div class="flex justify-between items-center mt-4">
+          <button @click="previousPage" :disabled="currentPage <= 1" class="bg-blue-500 text-white px-4 py-2 rounded">
+            Anterior
+          </button>
+          <span>Página {{ currentPage }} de {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage >= totalPages" class="bg-blue-500 text-white px-4 py-2 rounded">
+            Siguiente
+          </button>
+        </div>
       </CustomAccordion>
     </div>
   </DashboardLayout>
@@ -25,6 +40,7 @@ import CustomDataTable from '../components/CustomDataTable.vue';
 import CustomPeriodSelector from '../components/CustomPeriodSelector.vue';
 import { mockData } from '../utils/mockData';
 import type { Expediente } from '../types/expediente';
+import usePagination from '../composables/usePagination';
 
 // Datos mock y opciones
 const periods = ['2022-2023', '2023-2024', '2024-2025'];
@@ -43,8 +59,13 @@ const columns = [
 
 // Computación de datos filtrados según el periodo seleccionado
 const filteredData = computed(() => {
-  return data.value.filter(item => item.periodo === selectedPeriod.value);
+  return data.value.filter(item => item.period === selectedPeriod.value);
 });
+
+// Paginación
+const currentPage = ref(1);
+const rowsPerPage = ref(10);
+const { paginatedItems, nextPage, previousPage, totalPages } = usePagination(filteredData, currentPage, rowsPerPage);
 
 // Función para actualizar el periodo seleccionado
 const updatePeriod = (period: string) => {
