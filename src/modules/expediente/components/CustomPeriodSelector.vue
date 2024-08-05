@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <label for="period-selector">Seleccionar Período:</label>
-    <select id="period-selector" v-model="selectedPeriod" @change="emitUpdate">
+  <div class="flex items-center space-x-2">
+    <label for="period-selector" class="text-gray-700 font-medium">Seleccionar Período:</label>
+    <select id="period-selector" v-model="selectedPeriod" @change="emitUpdate" class="border border-gray-300 rounded-lg px-3 py-2">
       <option v-for="period in periods" :key="period" :value="period">
         {{ period }}
       </option>
@@ -29,5 +29,5 @@ const emitUpdate = () => {
 </script>
 
 <style scoped>
-/* Añade estilos si es necesario */
+/* Estilos adicionales si es necesario */
 </style>

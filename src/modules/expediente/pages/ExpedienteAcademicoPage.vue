@@ -19,11 +19,11 @@
         
         <!-- Paginación -->
         <div class="flex justify-between items-center mt-4">
-          <button @click="previousPage" :disabled="currentPage <= 1" class="bg-blue-500 text-white px-4 py-2 rounded">
+          <button @click="previousPage" :disabled="currentPage <= 1" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
             Anterior
           </button>
-          <span>Página {{ currentPage }} de {{ totalPages }}</span>
-          <button @click="nextPage" :disabled="currentPage >= totalPages" class="bg-blue-500 text-white px-4 py-2 rounded">
+          <span class="text-gray-700">Página {{ currentPage }} de {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage >= totalPages" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
             Siguiente
           </button>
         </div>
@@ -80,5 +80,5 @@ const editItem = (id: any) => {
 </script>
 
 <style scoped>
-/* Añade estilos si es necesario */
+/* Estilos adicionales si es necesario */
 </style>

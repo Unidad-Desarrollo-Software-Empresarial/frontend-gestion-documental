@@ -1,9 +1,9 @@
 <template>
-  <div class="accordion">
-    <button @click="toggle" class="accordion-header">
+  <div class="border rounded-md overflow-hidden shadow-md">
+    <button @click="toggle" class="w-full bg-gray-200 text-left px-4 py-2 hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
       {{ title }}
     </button>
-    <div v-show="isOpen" class="accordion-body">
+    <div v-show="isOpen" class="p-4">
       <slot></slot>
     </div>
   </div>
@@ -16,8 +16,6 @@ const props = defineProps<{
   title: string;
 }>();
 
-const title = props.title; // Usar `title` en el template
-
 const isOpen = ref(false);
 
 const toggle = () => {
@@ -26,17 +24,5 @@ const toggle = () => {
 </script>
 
 <style scoped>
-.accordion {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-.accordion-header {
-  background-color: #f0f0f0;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-.accordion-body {
-  padding: 10px;
-}
+/* Estilos adicionales si es necesario */
 </style>
