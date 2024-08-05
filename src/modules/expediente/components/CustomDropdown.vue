@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits, watch } from 'vue';
 
 const props = defineProps<{
   columns: { head: string; isShowing: boolean }[];
@@ -34,6 +34,10 @@ const isDropdownOpen = ref(false);
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
+
+watch(props.columns, () => {
+  updatedColumns();
+});
 
 const updatedColumns = () => {
   emit('update:columns', props.columns);

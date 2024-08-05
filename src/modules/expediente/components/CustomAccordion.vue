@@ -21,6 +21,9 @@ const isOpen = ref(false);
 const toggle = () => {
   isOpen.value = !isOpen.value;
 };
+
+// Use props.title in your template or script
+console.log(props.title);
 </script>
 
 <style scoped>
