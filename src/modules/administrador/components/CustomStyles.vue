@@ -105,5 +105,6 @@
     font-size: 0.875rem;
     color: #f87171; /* text-red-500 */
   }
+
   </style>
   

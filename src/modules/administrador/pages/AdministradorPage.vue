@@ -2,7 +2,7 @@
     <DashboardLayout>
         <div class="flex justify-between mb-4">
             <div>
-                <h2 class="text-2xl font-bold">ADMINISTRACIÓN</h2>
+                <h2 class="text-2xl font-bold">ADMINISTRACION</h2>
             </div>
         </div>
 
@@ -33,41 +33,70 @@
 
                 <!-- Mostrar roles solo si se selecciona un usuario -->
                 <template v-if="selectedUsuario">
-                    <!-- Roles -->
-                    <div class="flex flex-col gap-4 col-span-4">
-                        <label class="block text-gray-700 font-bold mb-2">Roles</label>
-                        <button type="button" @click="toggleRolesSelection" class="px-3 py-1 bg-blue-500 text-white rounded text-sm mb-2 w-32">
-                            {{ allRolesSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
-                        </button>
-                        <div class="flex flex-col gap-2">
-                            <div v-for="role in roles" :key="role" class="flex items-center">
-                                <input type="checkbox" :id="role" :value="role" v-model="selectedRoles" class="mr-2">
-                                <label :for="role">{{ role }}</label>
+                    <!-- Cuadro con roles, rol-menu y menús habilitados -->
+                    <div class="col-span-4 flex gap-8">
+                        <!-- Contenedor principal de Roles, Rol-Menu y Menú -->
+                        <div class="flex-1 flex flex-col gap-6">
+                            <!-- Contenedor de Roles -->
+                            <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg w-64 max-h-80 overflow-auto">
+                                <h4 class="text-lg font-bold mb-2">Roles</h4>
+                                <button type="button" @click="toggleRolesSelection" class="px-2 py-1 bg-blue-500 text-white rounded text-sm mb-2 w-full">
+                                    {{ allRolesSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
+                                </button>
+                                <div class="flex flex-col gap-2">
+                                    <div v-for="role in roles" :key="role" class="flex items-center">
+                                        <input type="checkbox" :id="role" :value="role" v-model="selectedRoles" class="mr-2">
+                                        <label :for="role">{{ role }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rol Menú -->
+                            <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg w-64 max-h-80 overflow-auto" v-if="selectedRoles.length > 0">
+                                <h4 class="text-lg font-bold mb-2">Rol Menú</h4>
+                                <div class="flex flex-col gap-2">
+                                    <div v-for="rolMenu in rolesMenu" :key="rolMenu.rol" class="flex items-center">
+                                        <input type="radio" :id="rolMenu.rol" :value="rolMenu.rol" v-model="selectedRolMenu" @change="handleRolMenuChange" class="mr-2">
+                                        <label :for="rolMenu.rol">{{ rolMenu.rol }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Menú -->
+                            <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg w-64 max-h-80 overflow-auto" v-if="selectedRolMenu">
+                                <h4 class="text-lg font-bold mb-2">Menú</h4>
+                                <button type="button" @click="toggleMenusSelection" class="px-2 py-1 bg-blue-500 text-white rounded text-sm mb-2 w-full">
+                                    {{ allMenusSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
+                                </button>
+                                <div class="flex flex-col gap-2">
+                                    <div v-for="menu in menus" :key="menu" class="flex items-center">
+                                        <input type="checkbox" :id="menu" :value="menu" v-model="selectedMenus" class="mr-2">
+                                        <label :for="menu">{{ menu }}</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Rol Menú -->
-                    <div class="flex flex-col gap-4 col-span-4" v-if="selectedRoles.length > 0">
-                        <label class="block text-gray-700 font-bold mb-2">Rol Menú</label>
-                        <div class="flex flex-col gap-2">
-                            <div v-for="rolMenu in rolesMenu" :key="rolMenu.rol" class="flex items-center">
-                                <input type="radio" :id="rolMenu.rol" :value="rolMenu.rol" v-model="selectedRolMenu" @change="handleRolMenuChange" class="mr-2">
-                                <label :for="rolMenu.rol">{{ rolMenu.rol }}</label>
+                        <!-- Recuadro con información de roles, rol-menu y menús habilitados -->
+                        <div class="w-64 p-4 border border-gray-300 rounded-lg bg-gray-100 max-h-80 overflow-auto">
+                            <h4 class="text-lg font-bold mb-2">Roles</h4>
+                            <div v-if="selectedUsuarioData">
+                                <ul class="list-disc pl-5">
+                                    <li v-for="role in selectedUsuarioData.roles" :key="role">{{ role }}</li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Menú -->
-                    <div class="flex flex-col gap-4 col-span-4" v-if="selectedRolMenu">
-                        <label class="block text-gray-700 font-bold mb-2">Menú</label>
-                        <button type="button" @click="toggleMenusSelection" class="px-3 py-1 bg-blue-500 text-white rounded text-sm mb-2 w-32">
-                            {{ allMenusSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
-                        </button>
-                        <div class="flex flex-col gap-2">
-                            <div v-for="menu in menus" :key="menu" class="flex items-center">
-                                <input type="checkbox" :id="menu" :value="menu" v-model="selectedMenus" class="mr-2">
-                                <label :for="menu">{{ menu }}</label>
+                        
+                        <!-- Recuadro con Rol-Menu y Menús Habilitados -->
+                        <div class="w-64 p-4 border border-gray-300 rounded-lg bg-gray-100 max-h-80 overflow-auto">
+                            <h4 class="text-lg font-bold mb-2">Rol-Menu y Menús Habilitados</h4>
+                            <div v-if="selectedUsuarioData">
+                                <div v-for="(menus, rolMenu) in selectedUsuarioData.rolMenus" :key="rolMenu">
+                                    <h5 class="font-bold mt-2">{{ rolMenu }} Menús:</h5>
+                                    <ul class="list-disc pl-5">
+                                        <li v-for="menu in menus.menus" :key="menu">{{ menu }}</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,7 +113,7 @@
                         Deshacer Cambios
                     </button>
                     <!-- Nota de deshacer cambios -->
-                    <p v-if="changesMade && !updated" class="text-yellow-500 ml-4">
+                    <p class="text-yellow-500 ml-4">
                         Nota: Solo puede deshacer cambios que aún no se han actualizado.
                     </p>
                 </div>
@@ -142,84 +171,34 @@ watch(selectedRoles, (newRoles) => {
     }
 });
 
+// Selected user data to display the current settings
+const selectedUsuarioData = computed(() => {
+    if (selectedUsuario.value) {
+        return usuarioData.value[selectedUsuario.value] || { roles: [], rolMenus: {} };
+    }
+    return null;
+});
+
 const handleUsuarioChange = () => {
     if (selectedUsuario.value) {
-        const userData = usuarioData.value[selectedUsuario.value] || { roles: [], rolMenus: {} };
-        selectedRoles.value = userData.roles;
-        selectedRolMenu.value = null;
-        selectedMenus.value = [];
-        // Mark changes as made
-        changesMade.value = true;
-        updated.value = false;
-        // Store the current state for resetting later
-        initialState.value = {
-            usuario: selectedUsuario.value,
-            roles: [...selectedRoles.value],
-            rolMenu: selectedRolMenu.value,
-            menus: [...selectedMenus.value],
-        };
-    } else {
-        selectedRoles.value = [];
+        const userData = usuarioData.value[selectedUsuario.value];
+        selectedRoles.value = [...userData.roles];
         selectedRolMenu.value = null;
         selectedMenus.value = [];
         changesMade.value = false;
-        initialState.value = {
-            usuario: null,
-            roles: [],
-            rolMenu: null,
-            menus: [],
-        };
+        updated.value = false;
     }
 };
 
 const handleRolMenuChange = () => {
-    if (selectedUsuario.value && selectedRolMenu.value) {
-        const userData = usuarioData.value[selectedUsuario.value] || { roles: [], rolMenus: {} };
+    if (selectedRolMenu.value && selectedUsuario.value) {
+        const userData = usuarioData.value[selectedUsuario.value];
         const rolMenuData = userData.rolMenus[selectedRolMenu.value] || { menus: [] };
         selectedMenus.value = rolMenuData.menus;
-    } else {
-        selectedMenus.value = [];
-    }
-};
-
-const submitForm = () => {
-    if (selectedUsuario.value) {
-        usuarioData.value[selectedUsuario.value] = {
-            roles: selectedRoles.value,
-            rolMenus: usuarioData.value[selectedUsuario.value]?.rolMenus || {}
-        };
-
-        if (selectedRolMenu.value) {
-            usuarioData.value[selectedUsuario.value].rolMenus[selectedRolMenu.value] = {
-                menus: selectedMenus.value
-            };
-        }
-
-        saveUsuarioData(usuarioData.value);
-
-        // Alerta al usuario
-        alert(`Datos de ${selectedUsuario.value} actualizados exitosamente.`);
-
-        // Mark form as updated
-        updated.value = true;
         changesMade.value = false;
-
-        // Limpiar los campos después de actualizar
-        handleUsuarioChange();
+        updated.value = false;
     }
 };
-
-// Reset form to the initial state
-const resetForm = () => {
-    selectedUsuario.value = initialState.value.usuario;
-    selectedRoles.value = [...initialState.value.roles];
-    selectedRolMenu.value = initialState.value.rolMenu;
-    selectedMenus.value = [...initialState.value.menus];
-    changesMade.value = false;
-};
-
-const allRolesSelected = computed(() => roles.length > 0 && selectedRoles.value.length === roles.length);
-const allMenusSelected = computed(() => menus.length > 0 && selectedMenus.value.length === menus.length);
 
 const toggleRolesSelection = () => {
     if (allRolesSelected.value) {
@@ -227,6 +206,7 @@ const toggleRolesSelection = () => {
     } else {
         selectedRoles.value = [...roles];
     }
+    changesMade.value = true;
 };
 
 const toggleMenusSelection = () => {
@@ -235,7 +215,48 @@ const toggleMenusSelection = () => {
     } else {
         selectedMenus.value = [...menus];
     }
+    changesMade.value = true;
 };
+
+const submitForm = () => {
+    if (selectedUsuario.value) {
+        const updatedData = {
+            ...usuarioData.value,
+            [selectedUsuario.value]: {
+                roles: selectedRoles.value,
+                rolMenus: {
+                    ...usuarioData.value[selectedUsuario.value]?.rolMenus,
+                    [selectedRolMenu.value || '']: {
+                        menus: selectedMenus.value
+                    }
+                }
+            }
+        };
+        saveUsuarioData(updatedData);
+        changesMade.value = false;
+        updated.value = true;
+    }
+};
+
+const resetForm = () => {
+    if (selectedUsuario.value) {
+        const originalData = usuarioData.value[selectedUsuario.value] || { roles: [], rolMenus: {} };
+        selectedRoles.value = [...originalData.roles];
+        selectedRolMenu.value = null;
+        selectedMenus.value = [];
+        changesMade.value = false;
+    }
+};
+
+const allRolesSelected = computed(() => {
+    return roles.length > 0 && selectedRoles.value.length === roles.length;
+});
+
+const allMenusSelected = computed(() => {
+    return menus.length > 0 && selectedMenus.value.length === menus.length;
+});
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Estilos adicionales aquí */
+</style>
