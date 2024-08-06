@@ -32,6 +32,7 @@ export const parseObjectRutas = (rutas: RutaInterface[], router: Router) => {
             rutasHijas: rutasHijasParseadas
         }
     })
+    console.log(rutasParseadas)
     return rutasParseadas
 }
 

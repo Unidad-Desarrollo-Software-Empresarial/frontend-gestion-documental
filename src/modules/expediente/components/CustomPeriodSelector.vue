@@ -7,7 +7,7 @@
       @change="emitUpdate" 
       class="border border-gray-300 rounded-lg px-3 py-2"
     >
-      <option v-for="period in periods" :key="period" :value="period">
+      <option v-for="period in periods" :key="period" :value="period" >
         {{ period }}
       </option>
     </select>

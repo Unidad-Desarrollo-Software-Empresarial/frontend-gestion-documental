@@ -1,11 +1,12 @@
 <template>
   <div class="relative inline-block text-left">
+    <!-- Botón de Activación del Dropdown -->
     <button 
       @click="toggleDropdown"
-      class="inline-flex w-full justify-between px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     >
       Gestionar Columnas
-      <svg class="w-4 h-4 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
       </svg>
     </button>
@@ -13,14 +14,13 @@
     <!-- Dropdown menú -->
     <div 
       v-show="isOpen" 
-      class="absolute right-0 z-10 mt-2 w-56 bg-white border border-gray-300 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-      @click="closeDropdown"
+      class="absolute left-0 mt-2 w-56 bg-white border border-gray-300 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
     >
       <ul class="py-1 text-sm text-gray-700">
         <li 
           v-for="(column, index) in columns" 
           :key="index"
-          class="flex justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
+          class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
           @click="toggleColumnVisibility(index)"
         >
           <span>{{ column.label }}</span>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 
 const props = defineProps<{
   columns: { name: string; label: string; visible: boolean }[];
@@ -49,16 +49,38 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
-const closeDropdown = () => {
-  isOpen.value = false;
-};
-
 const toggleColumnVisibility = (index: number) => {
   columns.value[index].visible = !columns.value[index].visible;
   emit('update-columns', columns.value);
 };
+
+// Cierra el dropdown cuando se hace clic fuera del componente
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (!target.closest('.relative')) {
+    isOpen.value = false;
+  }
+};
+
+document.addEventListener('click', handleClickOutside);
+
+watch(() => props.columns, (newColumns) => {
+  columns.value = newColumns;
+}, { deep: true });
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
-/* Añade estilos específicos si es necesario */
+/* Asegura que el menú esté alineado desde el botón */
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+  left: 0; /* Alinea el menú con la izquierda del contenedor relativo */
+}
 </style>
