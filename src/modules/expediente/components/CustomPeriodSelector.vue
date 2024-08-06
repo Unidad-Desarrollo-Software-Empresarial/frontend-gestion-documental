@@ -18,13 +18,14 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', period: string): void;
+  (e: 'update-modelValue', period: string): void;
 }>();
 
-const selectedPeriod = ref(props.modelValue);
+const selectedPeriod = ref<string>();
 
 const emitUpdate = () => {
-  emit('update:modelValue', selectedPeriod.value);
+  console.log('emitUpdate', selectedPeriod.value);
+  emit('update-modelValue', selectedPeriod.value ?? '');
 };
 </script>
 
