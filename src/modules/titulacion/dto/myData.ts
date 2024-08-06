@@ -31,6 +31,7 @@ export const myData = [
       activa: false,
     },
     
+    
     // Agrega más datos según sea necesario
   ];
   
@@ -44,7 +45,7 @@ export const dataTitulo=[
     titulo: "ingeniero",
     malla: "2009",
     defensa: "2023-10-02",
-    informe: "boton",
+    informe: "informe",
     respaldo: "circulo",
     existencia: "vacio",
   },
@@ -56,7 +57,7 @@ export const dataTitulo=[
     titulo: "ingeniero",
     malla: "2009",
     defensa: "2023-10-02",
-    informe: "boton",
+    informe: "informe",
     respaldo: "circulo",
     existencia: "vacio",
   },
@@ -68,7 +69,19 @@ export const dataTitulo=[
     titulo: "ingeniero",
     malla: "2009",
     defensa: "2023-10-02",
-    informe: "boton",
+    informe: "informe",
+    respaldo: "circulo",
+    existencia: "vacio",
+  },
+  {
+    numero: 4,
+    cedula: "1002003001",
+    nombre: "juan",
+    modalidad: "Trabajo de titulación",
+    titulo: "ingeniero",
+    malla: "2009",
+    defensa: "2023-10-02",
+    informe: "informe",
     respaldo: "circulo",
     existencia: "vacio",
   },

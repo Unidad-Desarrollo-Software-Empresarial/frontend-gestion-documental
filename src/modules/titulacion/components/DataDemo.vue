@@ -80,7 +80,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th v-for="(head, headIndex) in columns" :key="headIndex" scope="col"
-                                :class="`${columns[headIndex].isShowing ? 'px-6 py-3' : ''}`">
+                                :class="`${head.isShowing ? 'px-6 py-3' : ''}`">
                                 <div v-show="head.isShowing">
                                     {{ head.head }}
                                 </div>
@@ -90,26 +90,44 @@
                     <tbody>
                         <tr v-for="(row, rowIndex) in filteredItems" :key="rowIndex"
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <th v-for="(cell, cellIndex) in Object.values(row ? row : [])" :key="cellIndex" scope="row"
-                                :class="[
-                                    ` font-medium text-gray-900 whitespace-nowrap dark:text-white`,
-                                    `${columns[cellIndex].isShowing ? 'px-6 py-4' : ''}`
-                                ]">
-
-                                <div v-show="columns[cellIndex].isShowing">
-                                    <div v-if="typeof cell === 'object'">
-                                        {{ Object.values(cell!)[0] }}
+                            <td v-for="(cell, cellIndex) in Object.values(row)" :key="cellIndex" :class="[
+                                `font-medium text-gray-900 whitespace-nowrap dark:text-white`,
+                                `${columns[cellIndex]?.isShowing ? 'px-6 py-4' : ''}`
+                            ]">
+                                <div v-show="columns[cellIndex]?.isShowing">
+                                    <!-- Mostrar el estilo solo en la columna de respaldo donde el valor es 'circulo' -->
+                                    <div v-if="columns[cellIndex]?.head === 'respaldo' && cell === 'circulo'"
+                                        class="flex items-center">
+                                        <!-- Mostrar el círculo -->
+                                        <div class="w-8 h-8 bg-green-500 rounded-full mr-2"></div>
                                     </div>
-                                    <div v-else>{{ cell }}</div>
+                                    <div v-if="columns[cellIndex]?.head === 'informe' && cell === 'informe'">
+                                        <button
+                                            class="flex items-center px-1 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                                            </svg>
+                                            Agregar
+                                        </button>
+                                    </div>
+                                    <!-- Mostrar el contenido de la celda en otras columnas, pero solo si no es 'circulo' -->
+                                    <div v-else-if="columns[cellIndex]?.head === 'respaldo'">
+                                        <!-- No mostrar nada si es 'circulo' -->
+                                    </div>
+                                    <div v-else>
+                                        {{ cell }}
+                                    </div>
                                 </div>
-                            </th>
-                            <th>
-                                <button @click="emitRowId(row)" type="button"
-                                    :class="[
-                                        `text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-auto dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800`,
-                                        `${columns[columns.length - 1].isShowing ? 'block' : 'hidden'}`
-                                    ]">Editar</button>
-                            </th>
+
+                            </td>
+                            <td>
+                                <button @click="emitRowId(row)" type="button" :class="[
+                                    `text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-auto dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800`,
+                                    `${columns[columns.length - 1]?.isShowing ? 'block' : 'hidden'}`
+                                ]">VER</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -184,9 +202,9 @@ const searchFilter = ref<string>('');
 
 
 const filteredItems = computed(() => {
-    
+
     const rowsToShow: any[] = props.data ? props.data : [];
-    
+
     // Filtrar la data completa primero
     let items = rowsToShow.filter((item) => {
         return Object.values(item).some((value: any) => {
@@ -266,7 +284,7 @@ const showingNumberEndRowsCurrentPage = computed(() => {
 })
 
 const getPaginationArray = (arrProp: number) => {
-    const arr = Array.from({length: arrProp}, (_, i) => i+ 1)
+    const arr = Array.from({ length: arrProp }, (_, i) => i + 1)
     const maxLength = 7; // Maximum length of the output array
     const selectedIndex = arr.indexOf(currentPage.value);
 
@@ -288,9 +306,28 @@ import { defineEmits } from 'vue';
 const emit = defineEmits(['updateRow']);
 
 const emitRowId = (row: any) => {
-  const emitId = typeof row === 'object' && row !== null ? Object.values(row)[0] : row;
-  emit('updateRow', emitId);
+    const emitId = typeof row === 'object' && row !== null ? Object.values(row)[0] : row;
+    emit('updateRow', emitId);
 };
+
+/////////////////CIRCULO 
+
+// Define a method to check if a cell value should display a specific icon
+const isRespaldoColumn = (columnIndex: number) => {
+    // Assuming 'respaldo' column is the one before the 'EDITAR' column
+    return columnIndex === columns.value.length - 2;
+};
+
+const getCellContent = (columnIndex: number, cell: any) => {
+    if (isRespaldoColumn(columnIndex) && cell === 'circulo') {
+        return '<div class="w-16 h-16 bg-green-500 rounded-full"></div>';
+    }
+    return cell;
+};
+
+
+
+
 </script>
 
 <style scoped></style>
