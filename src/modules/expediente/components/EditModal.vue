@@ -1,138 +1,147 @@
 <template>
-  <div v-if="isVisible"
-      class="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50">
-      <div class="bg-white rounded shadow-lg max-w-[500px] min-w-[350px] max-h-[600px] overflow-auto" @click.stop>
-          <div class="relative p-4 w-full max-w-md max-h-full">
-              <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                  <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                          Modificar Expediente
-                      </h3>
-                      <button @click="closeModal" type="button"
-                          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
-                          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                              viewBox="0 0 14 14">
-                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                  stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                          </svg>
-                          <span class="sr-only">Cerrar modal</span>
-                      </button>
-                  </div>
-                  <form class="p-4 md:p-5" @submit.prevent="onSubmit">
-                      <div class="grid gap-4 mb-4 grid-cols-2">
-                          <div class="col-span-2">
-                              <label for="numeracion"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numeración</label>
-                              <input v-model="expediente.numeracion" id="numeracion" type="text"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                          </div>
-                          <div class="col-span-2">
-                              <label for="serie"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Serie</label>
-                              <input v-model="expediente.serie" id="serie" type="text"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                          </div>
-                          <div class="col-span-2">
-                              <label for="subserie"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subserie</label>
-                              <input v-model="expediente.subserie" id="subserie" type="text"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                          </div>
-                          <div class="col-span-2">
-                              <label for="descripcion"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
-                              <input v-model="expediente.descripcion" id="descripcion" type="text"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                          </div>
-                          <div class="col-span-2">
-                              <label for="origen"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Origen</label>
-                              <select id="origen" v-model="expediente.origen"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                                  <option value="Físico">Físico</option>
-                                  <option value="Electrónico">Electrónico</option>
-                                  <option value="Digital">Digital</option>
-                                  <option value="Híbrido">Híbrido</option>
-                              </select>
-                          </div>
-                          <div class="col-span-2">
-                              <label for="condiciones"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Condiciones</label>
-                              <select id="condiciones" v-model="expediente.condiciones"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                                  <option value="Público">Público</option>
-                                  <option value="Confidencial">Confidencial</option>
-                                  <option value="Reservado">Reservado</option>
-                                  <option value="Privado">Privado</option>
-                              </select>
-                          </div>
-                          <div class="col-span-2">
-                              <label for="period"
-                                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Período</label>
-                              <input v-model="expediente.period" id="period" type="text"
-                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                          </div>
-                      </div>
-                      <button type="submit"
-                          class="flex text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-auto dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800">
-                          <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                              viewBox="0 0 24 24">
-                              <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                  d="M11 16h2m6.707-9.293-2.414-2.414A1 1 0 0 0 16.586 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7.414a1 1 0 0 0-.293-.707ZM16 20v-6a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v6h8ZM9 4h6v3a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4Z" />
-                          </svg>
-                          &nbsp;&nbsp;Actualizar
-                      </button>
-                  </form>
-              </div>
+  <transition name="fade">
+    <div v-if="isVisible" class="fixed inset-0 overflow-y-auto flex items-center justify-center z-50">
+      <!-- Background overlay -->
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+      <!-- Modal content -->
+      <div class="relative w-full max-w-md max-h-full mx-4">
+        <div class="relative bg-white rounded-lg shadow-lg dark:bg-gray-700">
+          <!-- Modal header -->
+          <div class="flex items-center justify-between p-4 border-b dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Editar Expediente
+            </h3>
+            <button
+              type="button"
+              class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-2 dark:hover:bg-gray-600 dark:hover:text-white"
+              @click="$emit('close')"
+            >
+              <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
           </div>
+          <!-- Modal body -->
+          <form @submit.prevent="submitForm" class="p-4 space-y-4 md:p-5">
+            <div>
+              <label for="serie" class="block text-sm font-medium text-gray-900 dark:text-white">Serie Documental</label>
+              <input
+                v-if="formData"
+                v-model="formData.serie"
+                type="text"
+                id="serie"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="subserie" class="block text-sm font-medium text-gray-900 dark:text-white">Subserie Documental</label>
+              <input
+                v-if="formData"
+                v-model="formData.subserie"
+                type="text"
+                id="subserie"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="descripcion" class="block text-sm font-medium text-gray-900 dark:text-white">Descripción Subserie Documental</label>
+              <input
+                v-if="formData"
+                v-model="formData.descripcion"
+                type="text"
+                id="descripcion"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="origen" class="block text-sm font-medium text-gray-900 dark:text-white">Origen</label>
+              <input
+                v-if="formData"
+                v-model="formData.origen"
+                type="text"
+                id="origen"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                required
+              />
+            </div>
+
+            <div>
+              <label for="condiciones" class="block text-sm font-medium text-gray-900 dark:text-white">Condiciones de Acceso</label>
+              <input
+                v-if="formData"
+                v-model="formData.condiciones"
+                type="text"
+                id="condiciones"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                required
+              />
+            </div>
+
+            <div class="flex justify-end gap-4">
+              <button
+                type="button"
+                @click="$emit('close')"
+                class="text-gray-700 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:text-gray-300 dark:hover:text-white rounded-lg px-4 py-2.5 text-sm font-medium"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-4 py-2.5 text-sm font-medium dark:bg-blue-600 dark:hover:bg-blue-700"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-  </div>
+    </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import type { Expediente } from '../types/expediente';
+import { ref, watch } from 'vue'
+import type { Expediente } from '../types/expediente'
 
-const props = defineProps({
-  isVisible: {
-      type: Boolean,
-      default: false
+const props = defineProps<{
+  isVisible: boolean
+  expediente: Expediente | null
+}>()
+
+const emit = defineEmits(['update:expediente', 'close'])
+
+const formData = ref<Expediente | null>(null)
+
+watch(
+  () => props.expediente,
+  (newExpediente) => {
+    formData.value = { ...newExpediente! }
   },
-  expediente: {
-      type: Object as () => Expediente | null,
-      default: null
+  { immediate: true }
+)
+
+const submitForm = () => {
+  if (formData.value) {
+    emit('update:expediente', formData.value)
+    emit('close')
   }
-});
-
-const emit = defineEmits(['update:expediente', 'close']);
-
-const expediente = ref<Expediente | null>(props.expediente);
-
-watch(() => props.expediente, (newValue) => {
-  expediente.value = newValue;
-});
-
-const closeModal = () => {
-  emit('close');
-};
-
-const onSubmit = () => {
-  if (expediente.value) {
-      emit('update:expediente', expediente.value);
-  }
-  closeModal();
-};
+}
 </script>
 
-<style>
-.text-custom-color {
-  color: rgb(169, 222, 243); /* o #A9DEF3 */
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
-.bg-custom-color {
-  background-color: rgb(169, 222, 243); /* o #A9DEF3 */
-}
-.bg-custom-color:hover {
-  background-color: rgb(150, 200, 230); /* Color ligeramente diferente para hover */
+.fade-enter, 
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
