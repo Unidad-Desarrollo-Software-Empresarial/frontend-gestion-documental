@@ -1,7 +1,10 @@
 <template>
-  <div class="border rounded-md overflow-hidden shadow-md">
-    <button @click="toggle" class="w-full bg-gray-200 text-left px-4 py-2 hover:bg-gray-300 focus:outline-none focus:bg-gray-300">
-      {{ title }}
+  <div class="border border-gray-300 rounded-lg">
+    <button 
+      @click="toggle" 
+      class="w-full px-4 py-2 text-left bg-gray-100 border-b border-gray-300 text-gray-900 font-medium"
+    >
+      {{ props.title }}
     </button>
     <div v-show="isOpen" class="p-4">
       <slot></slot>
@@ -10,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
   title: string;
@@ -21,9 +24,6 @@ const isOpen = ref(false);
 const toggle = () => {
   isOpen.value = !isOpen.value;
 };
-
-// Use props.title in your template or script
-console.log(props.title);
 </script>
 
 <style scoped>
