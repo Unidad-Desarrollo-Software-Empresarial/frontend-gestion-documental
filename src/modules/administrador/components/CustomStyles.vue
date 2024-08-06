@@ -1,68 +1,109 @@
 <template>
     <div>
-        <!-- Aquí puedes colocar los elementos de la tabla si es necesario -->
+      <!-- Aquí no es necesario colocar HTML, ya que solo se manejarán estilos -->
     </div>
-</template>
-
-<style scoped>
-/* General button styling */
-.button {
-    padding: 0.5rem 1rem; /* Ajuste para usar rem en lugar de px */
-    border-radius: 0.25rem; /* Rounded */
+  </template>
+  
+  <style scoped>
+  .header-container {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb; /* bg-gray-200 */
+  }
+  
+  .header-title {
+      font-size: 2rem;
+      font-weight: 600;
+  }
+  
+  .form-container {
+    padding: 20px;
+    background-color: #f9fafb; /* bg-gray-100 */
+    border-radius: 0.5rem;
+  }
+  
+  .form-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+  }
+  
+  .form-grid {
+    display: grid;
+    gap: 1rem;
+  }
+  
+  .user-selection-container {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .select-user-container, .search-container {
+    flex: 1;
+  }
+  
+  .label {
+      font-weight: 500;
+  }
+  
+  .select-input, .search-input {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db; /* border-gray-300 */
+  }
+  
+  .no-matches, .matches {
+    font-size: 0.875rem;
+  }
+  
+  .roles-container, .rol-menu-container, .menu-container {
+    padding: 1rem;
+    background-color: #ffffff; /* bg-white */
+    border: 1px solid #d1d5db; /* border-gray-300 */
+    border-radius: 0.375rem;
+  }
+  
+  .toggle-button {
+    background-color: #4f46e5; /* bg-indigo-600 */
     color: white;
-}
-
-/* Blue button */
-.button-blue {
-    background-color: #3b82f6; /* bg-blue-500 */
-}
-
-/* Gray button */
-.button-gray {
-    background-color: #6b7280; /* bg-gray-500 */
-}
-
-/* Button text colors */
-.button-blue:hover {
-    background-color: #2563eb; /* bg-blue-600 */
-}
-
-.button-gray:hover {
-    background-color: #4b5563; /* bg-gray-600 */
-}
-
-/* Additional styles for layout and form elements */
-.select-style {
-    padding: 0.5rem; /* Ajuste para usar rem en lugar de px */
-    border: 1px solid #d1d5db; /* border-gray-300 */
-    border-radius: 0.25rem; /* Rounded */
-}
-
-.input-style {
-    padding: 0.5rem; /* Ajuste para usar rem en lugar de px */
-    border: 1px solid #d1d5db; /* border-gray-300 */
-    border-radius: 0.25rem; /* Rounded */
-}
-
-.label-style {
-    display: block;
-    color: #374151; /* text-gray-700 */
-    font-weight: bold;
-    margin-bottom: 0.5rem; /* Ajuste para usar rem en lugar de px */
-}
-
-.text-warning {
-    color: #f59e0b; /* text-yellow-500 */
-    margin-left: 1rem; /* Ajuste para usar rem en lugar de px */
-}
-
-.text-error {
-    color: #ef4444; /* text-red-500 */
-    margin-top: 0.5rem; /* Ajuste para usar rem en lugar de px */
-}
-
-.text-success {
-    color: #10b981; /* text-green-500 */
-    margin-top: 0.5rem; /* Ajuste para usar rem en lugar de px */
-}
-</style>
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+  
+  .role-item, .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .role-checkbox, .menu-checkbox, .rol-menu-radio {
+    margin-right: 0.5rem;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .submit-button, .reset-button {
+    background-color: #4f46e5; /* bg-indigo-600 */
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+  }
+  
+  .reset-button {
+    background-color: #ef4444; /* bg-red-600 */
+  }
+  
+  .note {
+    font-size: 0.875rem;
+    color: #f87171; /* text-red-500 */
+  }
+  </style>
+  

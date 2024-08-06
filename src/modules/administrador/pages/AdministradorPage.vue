@@ -2,7 +2,7 @@
     <DashboardLayout>
         <div class="flex justify-between mb-4">
             <div>
-                <h2 class="text-2xl font-bold">ADMINISTRACION</h2>
+                <h2 class="text-2xl font-bold">ADMINISTRACIÓN</h2>
             </div>
         </div>
 
@@ -33,7 +33,6 @@
 
                 <!-- Mostrar roles solo si se selecciona un usuario -->
                 <template v-if="selectedUsuario">
-                    
                     <!-- Roles -->
                     <div class="flex flex-col gap-4 col-span-4">
                         <label class="block text-gray-700 font-bold mb-2">Roles</label>
@@ -72,23 +71,20 @@
                             </div>
                         </div>
                     </div>
-
                 </template>
 
                 <!-- Botones de acción -->
-                <div class="col-span-4 flex flex-col items-end mt-6 gap-4">
-                    <div class="flex gap-4 items-center">
-                        <!-- Botón de actualizar -->
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded" :disabled="!selectedUsuario">
-                            Actualizar
-                        </button>
-                        <!-- Botón de deshacer cambios -->
-                        <button type="button" @click="resetForm" class="px-4 py-2 bg-gray-500 text-white rounded">
-                            Deshacer Cambios
-                        </button>
-                    </div>
+                <div class="col-span-4 flex justify-end mt-6 gap-4 items-center">
+                    <!-- Botón de actualizar -->
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded" :disabled="!selectedUsuario">
+                        Actualizar
+                    </button>
+                    <!-- Botón de deshacer cambios -->
+                    <button type="button" @click="resetForm" class="px-4 py-2 bg-gray-500 text-white rounded">
+                        Deshacer Cambios
+                    </button>
                     <!-- Nota de deshacer cambios -->
-                    <p v-if="changesMade && !updated" class="text-yellow-500 mt-4">
+                    <p v-if="changesMade && !updated" class="text-yellow-500 ml-4">
                         Nota: Solo puede deshacer cambios que aún no se han actualizado.
                     </p>
                 </div>
@@ -220,10 +216,11 @@ const resetForm = () => {
     selectedRolMenu.value = initialState.value.rolMenu;
     selectedMenus.value = [...initialState.value.menus];
     changesMade.value = false;
-    updated.value = false;
 };
 
-// Toggle roles selection
+const allRolesSelected = computed(() => roles.length > 0 && selectedRoles.value.length === roles.length);
+const allMenusSelected = computed(() => menus.length > 0 && selectedMenus.value.length === menus.length);
+
 const toggleRolesSelection = () => {
     if (allRolesSelected.value) {
         selectedRoles.value = [];
@@ -232,7 +229,6 @@ const toggleRolesSelection = () => {
     }
 };
 
-// Toggle menu selection
 const toggleMenusSelection = () => {
     if (allMenusSelected.value) {
         selectedMenus.value = [];
@@ -240,14 +236,6 @@ const toggleMenusSelection = () => {
         selectedMenus.value = [...menus];
     }
 };
-
-// Check if all roles are selected
-const allRolesSelected = computed(() => roles.length > 0 && roles.every(role => selectedRoles.value.includes(role)));
-
-// Check if all menus are selected
-const allMenusSelected = computed(() => menus.length > 0 && menus.every(menu => selectedMenus.value.includes(menu)));
 </script>
 
-<style scoped>
-/* Puedes agregar estilos personalizados aquí si es necesario */
-</style>
+<style scoped></style>
