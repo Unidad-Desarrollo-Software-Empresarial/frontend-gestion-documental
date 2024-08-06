@@ -8,6 +8,12 @@
         @update-modelValue="updatePeriod" 
       />
 
+      <!-- Gestión de Columnas -->
+      <ColumnVisibilityManager 
+        :columns="columns" 
+        @update-columns="updateColumnVisibility" 
+      />
+
       <!-- Acordeón que contiene la tabla de datos -->
       <CustomAccordion title="Detalles del Expediente">
         <CustomDataTable 
@@ -89,6 +95,7 @@ import CustomAccordion from '../components/CustomAccordion.vue';
 import CustomDataTable from '../components/CustomDataTable.vue';
 import CustomPeriodSelector from '../components/CustomPeriodSelector.vue';
 import EditModal from '../components/EditModal.vue';
+import ColumnVisibilityManager from '../components/ColumnVisibilityManager.vue';
 import { mockData } from '../utils/mockData';
 import type { Expediente } from '../types/expediente';
 import usePagination from '../composables/usePagination';
@@ -98,14 +105,14 @@ const selectedPeriod = ref<string>('');
 const data = ref<Expediente[]>(mockData);
 
 // Definición de columnas de la tabla
-const columns = [
+const columns = ref([
   { name: 'numeracion', label: 'Numeración', visible: true },
   { name: 'serie', label: 'Serie Documental', visible: true },
   { name: 'subserie', label: 'Subserie Documental', visible: true },
   { name: 'descripcion', label: 'Descripción Subserie Documental', visible: true },
   { name: 'origen', label: 'Origen', visible: true },
   { name: 'condiciones', label: 'Condiciones de Acceso', visible: true }
-];
+]);
 
 // Computación de datos filtrados según el período seleccionado
 const filteredData = computed(() => {
@@ -149,6 +156,11 @@ const closeModal = () => {
 const updatePeriod = (period: string) => {
   selectedPeriod.value = period;
   currentPage.value = 1; // Restablece la página actual a 1 al cambiar el período
+};
+
+// Función para actualizar la visibilidad de las columnas
+const updateColumnVisibility = (updatedColumns: Array<{ name: string, label: string, visible: boolean }>) => {
+  columns.value = updatedColumns;
 };
 
 // Función para ir a la primera página
