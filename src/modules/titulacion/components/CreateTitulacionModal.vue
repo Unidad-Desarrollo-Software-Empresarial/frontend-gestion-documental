@@ -1,22 +1,25 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50" @click.self="closeModal">
+  <div v-if="show" 
+  class="fixed top-0 left-0 sm:ml-32 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50"
+  @click.self="closeModal">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
       <h2 class="text-xl font-bold mb-4">Agregar Estudiante</h2>
       <form @submit.prevent="handleSubmit">
         <div class="mb-4">
           <label class="block text-gray-700">Cédula</label>
           <input v-model="cedula" type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50" required />
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"/>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Estudiante</label>
           <input v-model="estudiante" type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50" required />
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+          />
         </div>
         <div class="mb-4">
           <label class="block text-gray-700">Modalidad</label>
           <select v-model="modalidad" @change="handleModalidadChange"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50">
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
             <option value="">Seleccione una modalidad</option>
             <option value="Modalidad1">Trabajo de Titulación</option>
             <option value="Modalidad2">Examen Complexivo</option>
@@ -25,7 +28,7 @@
         <div class="mb-4">
           <label class="block text-gray-700">Título</label>
           <input v-model="titulo" type="text"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50" required />
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required />
         </div>
         <div v-if="modalidad" class="mb-4">
           <label class="block text-gray-700">Malla</label>

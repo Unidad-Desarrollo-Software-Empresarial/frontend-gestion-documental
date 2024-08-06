@@ -89,7 +89,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(row, rowIndex) in filteredItems" :key="rowIndex"
-                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
                             <td v-for="(cell, cellIndex) in Object.values(row)" :key="cellIndex" :class="[
                                 `font-medium text-gray-900 whitespace-nowrap dark:text-white`,
                                 `${columns[cellIndex]?.isShowing ? 'px-6 py-4' : ''}`
@@ -102,8 +102,9 @@
                                         <div class="w-8 h-8 bg-green-500 rounded-full mr-2"></div>
                                     </div>
                                     <div v-if="columns[cellIndex]?.head === 'informe' && cell === 'informe'">
-                                        <button
-                                            class="flex items-center px-1 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                        <button @click="$emit('openModal', row)" 
+                                            class="flex items-center px-1 py-1 text-sm font-medium text-white
+                                            bg-blue-600 rounded-md hover:bg-blue-700">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -120,11 +121,10 @@
                                         {{ cell }}
                                     </div>
                                 </div>
-
                             </td>
-                            <td>
+                            <td class="flex justify-center items-center h-full">
                                 <button @click="emitRowId(row)" type="button" :class="[
-                                    `text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 m-auto dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800`,
+                                    `text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800`,
                                     `${columns[columns.length - 1]?.isShowing ? 'block' : 'hidden'}`
                                 ]">VER</button>
                             </td>
@@ -195,7 +195,8 @@ const props = defineProps({
     data: {
         type: Array,
         required: false
-    }
+    },
+   
 })
 
 const searchFilter = ref<string>('');
@@ -303,27 +304,28 @@ const getPaginationArray = (arrProp: number) => {
 //////////////////
 import { defineEmits } from 'vue';
 
-const emit = defineEmits(['updateRow']);
+const emit = defineEmits(['updateRow','openModal']);
 
 const emitRowId = (row: any) => {
     const emitId = typeof row === 'object' && row !== null ? Object.values(row)[0] : row;
     emit('updateRow', emitId);
 };
 
+
 /////////////////CIRCULO 
 
 // Define a method to check if a cell value should display a specific icon
-const isRespaldoColumn = (columnIndex: number) => {
-    // Assuming 'respaldo' column is the one before the 'EDITAR' column
-    return columnIndex === columns.value.length - 2;
-};
+// const isRespaldoColumn = (columnIndex: number) => {
+//     // Assuming 'respaldo' column is the one before the 'EDITAR' column
+//     return columnIndex === columns.value.length - 2;
+// };
 
-const getCellContent = (columnIndex: number, cell: any) => {
-    if (isRespaldoColumn(columnIndex) && cell === 'circulo') {
-        return '<div class="w-16 h-16 bg-green-500 rounded-full"></div>';
-    }
-    return cell;
-};
+// const getCellContent = (columnIndex: number, cell: any) => {
+//     if (isRespaldoColumn(columnIndex) && cell === 'circulo') {
+//         return '<div class="w-16 h-16 bg-green-500 rounded-full"></div>';
+//     }
+//     return cell;
+// };
 
 
 

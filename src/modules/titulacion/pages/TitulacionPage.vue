@@ -2,20 +2,21 @@
   <DashboardLayout>
     <div>
       <h3 class="text-2xl font-bold text-gray-800 mb-4">Titulación Carreras</h3>
-      <DataDemo :data="myData" @updateRow="handleView" />
+      <DataDemo :data="myData" @updateRow="handleView" @openModal="handleOpenModal" />
     </div>
 
     <h3 class="text-2xl font-bold text-gray-800 mb-4">Titulación:</h3>
-    
+
     <div v-if="showDataDemo">
-      <button
-        @click="openModal"
+      <button @click="openModal"
         class="px-3 py-0 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-300 ease-in-out">
         Agregar
       </button>
-      <DataDemo :data="dataTitulo" />
+      <DataDemo :data="dataTitulo" @openModal="handleOpenModal" />
     </div>
-    <CreateTitulacionModal :show="showModal"  @close="closeModal" @save="saveStudent" />
+    <CreateTitulacionModal :show="showModal" @close="closeModal" @save="saveStudent" />
+    <CreateInformeModal :show="showInformeModal" :data="selectedRowData" @close="closeInformeModal"
+      @save="saveInforme" />
   </DashboardLayout>
 </template>
 
@@ -23,12 +24,14 @@
 import { ref } from 'vue';
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 import DataDemo from '../components/DataDemo.vue';
-import CreateTitulacionModal from '../components/CreateTitulacionModal.vue'; 
+import CreateTitulacionModal from '../components/CreateTitulacionModal.vue';
+import CreateInformeModal from '../components/CreateInformeModal.vue';
 import { myData, dataTitulo } from '../dto/myData';
 
 const showDataDemo = ref(false);
 const showModal = ref(false);
-
+const showInformeModal = ref(false);
+const selectedRowData = ref(null);
 
 const openModal = () => {
   showModal.value = true;
@@ -53,5 +56,19 @@ const handleView = (emitId: number) => {
   } else {
     showDataDemo.value = false;
   }
+};
+
+const handleOpenModal = (row: any) => {
+  selectedRowData.value = row;
+  showInformeModal.value = true;
+};
+
+const closeInformeModal = () => {
+  showInformeModal.value = false;
+};
+
+const saveInforme = (informeData: any) => {
+  console.log('Informe guardado:', informeData);
+  // Aquí puedes agregar la lógica para guardar el informe
 };
 </script>
