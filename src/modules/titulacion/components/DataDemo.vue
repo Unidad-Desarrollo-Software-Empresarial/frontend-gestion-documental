@@ -123,7 +123,7 @@
                                         </div>
                                     </div>
                                     <div v-if="columns[cellIndex]?.head === 'existencia'">
-                                        <button @click="$emit('openModal', row)"
+                                        <button @click="$emit('openDefensaModal', row)"
                                             class="flex items-center px-1 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -329,7 +329,7 @@ const getPaginationArray = (arrProp: number) => {
 //////////////////
 import { defineEmits } from 'vue';
 
-const emit = defineEmits(['updateRow', 'openModal', 'viewPDF']);
+const emit = defineEmits(['updateRow', 'openModal', 'viewPDF','openDefensaModal']);
 
 const emitRowId = (row: any) => {
     const emitId = row.cedula || row.numero || Object.values(row)[0];
