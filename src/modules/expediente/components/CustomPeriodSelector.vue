@@ -3,7 +3,7 @@
     <!-- Etiqueta fuera del selector -->
     <label for="period-selector" class="text-gray-700 font-semibold text-sm md:text-base">Seleccionar Período:</label>
     <!-- Contenedor del Dropdown -->
-    <div class="relative inline-block text-left">
+    <div class="relative inline-block text-left" ref="dropdown">
       <button 
         @click="toggleDropdown" 
         class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, watch } from 'vue';
+import { ref, defineProps, defineEmits, watch, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps<{
   periods: string[];
@@ -61,6 +61,7 @@ const emit = defineEmits<{
 
 const selectedPeriod = ref(props.modelValue);
 const isOpen = ref(false);
+const dropdown = ref<HTMLElement | null>(null);
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -75,6 +76,21 @@ const selectPeriod = (period: string) => {
 // Watch for changes in the props.modelValue to keep the selectedPeriod in sync
 watch(() => props.modelValue, (newValue) => {
   selectedPeriod.value = newValue;
+});
+
+// Handle click outside of the dropdown to close it
+const handleClickOutside = (event: MouseEvent) => {
+  if (dropdown.value && !dropdown.value.contains(event.target as Node)) {
+    isOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 

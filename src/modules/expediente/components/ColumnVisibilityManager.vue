@@ -1,5 +1,5 @@
 <template>
-  <div class="relative inline-block text-left">
+  <div class="relative inline-block text-left" ref="dropdown">
     <!-- Botón de Activación del Dropdown -->
     <button 
       @click="toggleDropdown"
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps<{
   columns: { name: string; label: string; visible: boolean }[];
@@ -57,6 +57,7 @@ const emit = defineEmits<{ (event: 'update-columns', updatedColumns: any[]): voi
 
 const isOpen = ref(false);
 const columns = ref(props.columns);
+const dropdown = ref<HTMLElement | null>(null);
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
@@ -67,19 +68,16 @@ const toggleColumnVisibility = (index: number) => {
   emit('update-columns', columns.value);
 };
 
-// Cierra el dropdown cuando se hace clic fuera del componente
+// Handle click outside of the dropdown to close it
 const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement;
-  if (!target.closest('.relative')) {
+  if (dropdown.value && !dropdown.value.contains(event.target as Node)) {
     isOpen.value = false;
   }
 };
 
-document.addEventListener('click', handleClickOutside);
-
-watch(() => props.columns, (newColumns) => {
-  columns.value = newColumns;
-}, { deep: true });
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);

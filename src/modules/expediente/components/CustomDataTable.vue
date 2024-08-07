@@ -7,11 +7,11 @@
             v-for="column in columns"
             :key="column.name"
             v-show="column.visible"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
             {{ column.label }}
           </th>
-          <th v-if="actionsVisible" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+          <th v-if="actionsVisible" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -20,14 +20,14 @@
             v-for="column in columns"
             :key="column.name"
             v-show="column.visible"
-            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+            class="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900"
           >
             {{ item[column.name] }}
           </td>
-          <td v-if="actionsVisible" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">
+          <td v-if="actionsVisible" class="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-500">
             <button
               @click="() => onEditItem(item.id)"
-              class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800"
+              class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none dark:focus:ring-blue-800"
             >
               Editar
             </button>
@@ -52,5 +52,5 @@ const { columns, actionsVisible, onEditItem } = props;
 </script>
 
 <style scoped>
-/* Estilos para la tabla si es necesario */
+/* Estilos adicionales si es necesario */
 </style>

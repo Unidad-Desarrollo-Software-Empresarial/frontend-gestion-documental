@@ -10,12 +10,23 @@
 
     <!-- Contenedor Principal -->
     <div class="border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-800 p-4 md:p-6 space-y-4 md:space-y-6">
+      <!-- Barra de Búsqueda -->
+      <div class="mb-4">
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          placeholder="Buscar en los expedientes..." 
+          class="border border-gray-300 rounded-lg px-4 py-2 w-full dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+        />
+      </div>
+      
       <!-- Selector de Período -->
       <CustomPeriodSelector 
         :periods="filteredPeriods" 
         :modelValue="selectedPeriod" 
         @update-modelValue="updatePeriod" 
       />
+      
       <!-- Gestión de Columnas -->
       <ColumnVisibilityManager 
         :columns="columns" 
@@ -111,6 +122,7 @@ import usePagination from '../composables/usePagination'
 
 // Datos y estado
 const selectedPeriod = ref<string>('')
+const searchQuery = ref('') // Estado para la búsqueda en tiempo real
 const data = ref<Expediente[]>(mockData)
 
 // Definición de columnas de la tabla
@@ -123,9 +135,14 @@ const columns = ref([
   { name: 'condiciones', label: 'Condiciones de Acceso', visible: true }
 ])
 
-// Computación de datos filtrados según el período seleccionado
+// Computación de datos filtrados según el período seleccionado y la búsqueda
 const filteredData = computed(() => {
-  return data.value.filter((item) => item.period === selectedPeriod.value)
+  return data.value
+    .filter((item) => item.period === selectedPeriod.value)
+    .filter((item) => {
+      const query = searchQuery.value.toLowerCase()
+      return Object.values(item).some(value => value.toString().toLowerCase().includes(query))
+    })
 })
 
 // Computación de periodos únicos
@@ -189,14 +206,14 @@ watch(filteredData, (newData) => {
   }
 })
 
-// Configura el período seleccionado por defecto al período más reciente cuando el componente se monta
+// Configura el período seleccionado inicialmente si hay datos
 onMounted(() => {
   if (filteredPeriods.value.length > 0) {
-    selectedPeriod.value = filteredPeriods.value[0] // Establece el período más reciente
+    selectedPeriod.value = filteredPeriods.value[0]
   }
 })
 </script>
 
 <style scoped>
-/* Añade estilos si es necesario */
+/* Estilos adicionales si es necesario */
 </style>
