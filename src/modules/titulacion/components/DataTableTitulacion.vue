@@ -1,6 +1,6 @@
-<template>
+<!-- <template>
 
-  <!-- Input de búsqueda -->
+   Input de búsqueda -->
   <div class="py-2 px-2">
     <form>
       <h5>Titulación</h5>
@@ -42,7 +42,7 @@
       <thead class="text-xs text-gray-700 uppercase bg-gray-50">
         <tr>
           <th class="px-6 py-3">NUMERO</th>
-          <th class="px-6 py-3">NOMBRE</th>
+          <th class="px-6 py-3">PRUEBA</th>
           <th class="px-6 py-3">CEDULA</th>
           <th class="px-6 py-3">MODALIDAD</th>
           <th class="px-6 py-3">TITULO</th>
@@ -78,9 +78,9 @@
     </table>
   </div>
 
-</template>
+</template> -->
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 
 import { ref, defineProps } from 'vue';
 
@@ -99,4 +99,4 @@ const props = defineProps<{
 
 <style scoped>
 /* Agrega estilos si es necesario */
-</style>
+</style> -->

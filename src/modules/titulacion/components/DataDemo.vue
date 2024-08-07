@@ -96,15 +96,35 @@
                             ]">
                                 <div v-show="columns[cellIndex]?.isShowing">
                                     <!-- Mostrar el estilo solo en la columna de respaldo donde el valor es 'circulo' -->
-                                    <div v-if="columns[cellIndex]?.head === 'respaldo' && cell === 'circulo'"
-                                        class="flex items-center">
+                                    <div v-if="columns[cellIndex]?.head === 'respaldo'" class="flex items-center">
                                         <!-- Mostrar el círculo -->
                                         <div class="w-8 h-8 bg-green-500 rounded-full mr-2"></div>
                                     </div>
-                                    <div v-if="columns[cellIndex]?.head === 'informe' && cell === 'informe'">
-                                        <button @click="$emit('openModal', row)" 
-                                            class="flex items-center px-1 py-1 text-sm font-medium text-white
-                                            bg-blue-600 rounded-md hover:bg-blue-700">
+                                    <div v-if="columns[cellIndex]?.head === 'informe'">
+                                        <button v-if="!props.savedPDFs || !props.savedPDFs[row.cedula]"
+                                            @click="$emit('openModal', row)"
+                                            class="flex items-center px-1 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+                                            </svg>
+                                            Agregar
+                                        </button>
+                                        <div v-else class="flex">
+                                            <button @click="$emit('viewPDF', props.savedPDFs[row.cedula])"
+                                                class="flex items-center px-1 py-1 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 mr-2">
+                                                Ver
+                                            </button>
+                                            <button @click="$emit('openModal', row)"
+                                                class="flex items-center px-1 py-1 text-sm font-medium text-white bg-yellow-600 rounded-md hover:bg-yellow-700">
+                                                Cambiar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div v-if="columns[cellIndex]?.head === 'existencia'">
+                                        <button @click="$emit('openModal', row)"
+                                            class="flex items-center px-1 py-1 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -196,7 +216,12 @@ const props = defineProps({
         type: Array,
         required: false
     },
-   
+
+    savedPDFs: {
+        type: Object,
+        required: false
+    }
+
 })
 
 const searchFilter = ref<string>('');
@@ -304,28 +329,14 @@ const getPaginationArray = (arrProp: number) => {
 //////////////////
 import { defineEmits } from 'vue';
 
-const emit = defineEmits(['updateRow','openModal']);
+const emit = defineEmits(['updateRow', 'openModal', 'viewPDF']);
 
 const emitRowId = (row: any) => {
-    const emitId = typeof row === 'object' && row !== null ? Object.values(row)[0] : row;
+    const emitId = row.cedula || row.numero || Object.values(row)[0];
     emit('updateRow', emitId);
 };
 
 
-/////////////////CIRCULO 
-
-// Define a method to check if a cell value should display a specific icon
-// const isRespaldoColumn = (columnIndex: number) => {
-//     // Assuming 'respaldo' column is the one before the 'EDITAR' column
-//     return columnIndex === columns.value.length - 2;
-// };
-
-// const getCellContent = (columnIndex: number, cell: any) => {
-//     if (isRespaldoColumn(columnIndex) && cell === 'circulo') {
-//         return '<div class="w-16 h-16 bg-green-500 rounded-full"></div>';
-//     }
-//     return cell;
-// };
 
 
 

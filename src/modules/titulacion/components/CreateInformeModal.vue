@@ -30,7 +30,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, toRefs, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
+
+interface FormData {
+    cedula: string;
+    nombre: string;
+    titulo: string;
+    pdfFile: File | null;
+}
 
 const props = defineProps({
     show: Boolean,
@@ -39,22 +46,44 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'save']);
 
-const formData = reactive({ ...props.data, pdfFile: null });
+const formData: FormData = reactive({
+    cedula: '',
+    nombre: '',
+    titulo: '',
+    pdfFile: null,
+});
+
+const isSaved = ref(false);
+
+watch(() => props.data, (newVal) => {
+    if (newVal) {
+        formData.cedula = newVal.cedula || '';
+        formData.nombre = newVal.nombre || '';
+        formData.titulo = newVal.titulo || '';
+        isSaved.value = false; // Reset saved state when data changes
+    }
+});
 
 const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    if (target.files) {
+    if (target.files && target.files.length > 0) {
         formData.pdfFile = target.files[0];
     }
 };
 
 const submitForm = () => {
-    emit('save', formData);
+    if (formData.pdfFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const pdfContent = e.target?.result as string;
+            emit('save', { ...formData, pdfContent, cedula: formData.cedula });
+            isSaved.value = true;
+        };
+        reader.readAsDataURL(formData.pdfFile);
+    } else {
+        emit('save', { ...formData, cedula: formData.cedula });
+        isSaved.value = true;
+    }
 };
 
-watch(() => props.data, (newVal) => {
-    if (newVal) {
-        Object.assign(formData, newVal);
-    }
-});
 </script>

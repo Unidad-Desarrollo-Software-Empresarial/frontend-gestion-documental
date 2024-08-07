@@ -12,11 +12,12 @@
         class="px-3 py-0 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-300 ease-in-out">
         Agregar
       </button>
-      <DataDemo :data="dataTitulo" @openModal="handleOpenModal" />
+      <!-- <DataDemo :data="dataTitulo" @openModal="handleOpenModal" /> -->
+      <DataDemo :data="dataTitulo" :savedPDFs="savedPDFs" @openModal="handleOpenModal" @viewPDF="viewPDF" />
     </div>
     <CreateTitulacionModal :show="showModal" @close="closeModal" @save="saveStudent" />
-    <CreateInformeModal :show="showInformeModal" :data="selectedRowData" @close="closeInformeModal"
-      @save="saveInforme" />
+    <CreateInformeModal :show="showInformeModal" :data="selectedRowData" @close="closeInformeModal" @save="saveInforme" />
+  
   </DashboardLayout>
 </template>
 
@@ -69,6 +70,17 @@ const closeInformeModal = () => {
 
 const saveInforme = (informeData: any) => {
   console.log('Informe guardado:', informeData);
-  // Aquí puedes agregar la lógica para guardar el informe
+  if (informeData.pdfContent && informeData.cedula) {
+    savedPDFs.value[informeData.cedula] = informeData.pdfContent;
+  }
+  closeInformeModal();
 };
+const savedPDFs = ref<{ [key: string]: string }>({});
+const viewPDF = (pdfContent: string) => {
+  const win = window.open("", "_blank");
+  if (win) {
+    win.document.write('<iframe src="' + pdfContent + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+  }
+};
+
 </script>
