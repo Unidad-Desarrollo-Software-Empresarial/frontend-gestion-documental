@@ -6,8 +6,21 @@
       class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     >
       Gestionar Columnas
-      <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      <svg 
+        class="w-2 h-2 ml-5 transition-transform duration-300" 
+        :class="{'rotate-180': isOpen}" 
+        aria-hidden="true" 
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="none" 
+        viewBox="0 0 10 6"
+      >
+        <path 
+          stroke="currentColor" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M9 5 5 1 1 5"
+        />
       </svg>
     </button>
 
@@ -74,6 +87,15 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Flecha giratoria */
+.transition-transform {
+  transition: transform 0.3s ease-in-out;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
 /* Asegura que el menú esté alineado desde el botón */
 .relative {
   position: relative;
