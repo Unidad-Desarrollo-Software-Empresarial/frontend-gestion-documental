@@ -1,262 +1,299 @@
 <template>
-    <DashboardLayout>
-        <div class="flex justify-between mb-4">
-            <div>
-                <h2 class="text-2xl font-bold">ADMINISTRACION</h2>
+  <DashboardLayout>
+    <div class="flex flex-col md:flex-row justify-between mb-4">
+      <div>
+        <h2 class="text-2xl font-bold">ADMINISTRACION</h2>
+      </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <h3 class="text-lg font-bold mb-4">Asignar ROL-PRIVILEGIO</h3>
+      <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- Selección de usuarios y campo de búsqueda en fila -->
+        <div class="flex flex-col md:flex-row gap-8 col-span-1 md:col-span-4">
+          <!-- Usuarios -->
+          <div class="flex flex-col flex-1 md:w-1/2">
+            <label class="block text-gray-700 font-bold mb-2">Usuarios</label>
+            <select v-model="selectedUsuario" @change="handleUsuarioChange" class="p-2 border border-gray-300 rounded w-full">
+              <option value="" disabled>Seleccione un usuario</option>
+              <option v-for="usuario in filteredUsuarios" :key="usuario" :value="usuario">
+                {{ usuario }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Campo de búsqueda de usuarios -->
+          <div class="flex flex-col flex-1 md:w-1/2">
+            <label class="block text-gray-700 font-bold mb-2">Buscar Usuarios</label>
+            <input type="text" v-model="searchQuery" placeholder="Buscar usuario..." class="p-2 border border-gray-300 rounded w-full" />
+            <p v-if="searchQuery && filteredUsuarios.length === 0" class="text-red-500 mt-2">No hay coincidencias</p>
+            <p v-if="searchQuery && filteredUsuarios.length > 1" class="text-green-500 mt-2">
+              Cantidad de coincidencias: {{ filteredUsuarios.length }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Mostrar roles solo si se selecciona un usuario -->
+        <template v-if="selectedUsuario">
+          <div class="col-span-1 md:col-span-4 flex flex-col md:flex-row gap-8">
+            <!-- Recuadro con información de roles habilitados -->
+            <div class="order-1 md:order-2 w-full md:w-64 p-4 border border-gray-300 rounded-lg bg-gray-100 max-h-60 overflow-auto text-sm">
+              <h4 class="font-bold mb-2">Roles Asignados Al Usuario</h4>
+              <div v-if="selectedUsuarioData">
+                <ul class="list-disc pl-5">
+                  <li v-for="role in selectedUsuarioData.roles" :key="role">{{ role }}</li>
+                </ul>
+              </div>
             </div>
-        </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <h3 class="text-lg font-bold mb-4">Asignar ROL-PRIVILEGIO</h3>
-            <form @submit.prevent="submitForm" class="grid grid-cols-4 gap-8">
-                <!-- Selección de usuarios y campo de búsqueda -->
-                <div class="flex gap-8 col-span-4">
-                    <!-- Usuarios -->
-                    <div class="flex flex-col flex-1">
-                        <label class="block text-gray-700 font-bold mb-2">Usuarios</label>
-                        <select v-model="selectedUsuario" @change="handleUsuarioChange" class="p-2 border border-gray-300 rounded">
-                            <option value="" disabled>Seleccione un usuario</option>
-                            <option v-for="usuario in filteredUsuarios" :key="usuario" :value="usuario">
-                                {{ usuario }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- Campo de búsqueda de usuarios -->
-                    <div class="flex flex-col flex-1">
-                        <label class="block text-gray-700 font-bold mb-2">Buscar Usuarios</label>
-                        <input type="text" v-model="searchQuery" placeholder="Buscar usuario..." class="p-2 border border-gray-300 rounded">
-                        <p v-if="searchQuery && filteredUsuarios.length === 0" class="text-red-500 mt-2">No hay coincidencias</p>
-                        <p v-if="searchQuery && filteredUsuarios.length > 1" class="text-green-500 mt-2">Cantidad de coincidencias: {{ filteredUsuarios.length }}</p>
-                    </div>
+            <!-- Recuadro con Rol-Ruta y Rutas Habilitadas -->
+            <div class="order-2 md:order-3 w-full md:w-64 p-4 border border-gray-300 rounded-lg bg-gray-100 max-h-60 overflow-auto text-sm">
+              <h4 class="font-bold mb-2">Rol-Ruta y Rutas Habilitadas Al Usuario</h4>
+              <div v-if="selectedUsuarioData">
+                <div v-for="(rutas, rolRuta) in selectedUsuarioData.rolRutas" :key="rolRuta">
+                  <h5 class="font-bold mt-2">{{ rolRuta }}, Rutas:</h5>
+                  <ul class="list-disc pl-5">
+                    <li v-for="ruta in rutas.rutas" :key="ruta">{{ ruta }}</li>
+                  </ul>
                 </div>
+              </div>
+            </div>
 
-                <!-- Mostrar roles solo si se selecciona un usuario -->
-                <template v-if="selectedUsuario">
-                    <!-- Cuadro con roles, rol-menu y menús habilitados -->
-                    <div class="col-span-4 flex gap-8">
-                        <!-- Contenedor principal de Roles, Rol-Menu y Menú -->
-                        <div class="flex-1 flex flex-col gap-6">
-                            <!-- Contenedor de Roles -->
-                            <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg w-64 max-h-80 overflow-auto">
-                                <h4 class="text-lg font-bold mb-2">Roles</h4>
-                                <button type="button" @click="toggleRolesSelection" class="px-2 py-1 bg-blue-500 text-white rounded text-sm mb-2 w-full">
-                                    {{ allRolesSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
-                                </button>
-                                <div class="flex flex-col gap-2">
-                                    <div v-for="role in roles" :key="role" class="flex items-center">
-                                        <input type="checkbox" :id="role" :value="role" v-model="selectedRoles" class="mr-2">
-                                        <label :for="role">{{ role }}</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Rol Menú -->
-                            <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg w-64 max-h-80 overflow-auto" v-if="selectedRoles.length > 0">
-                                <h4 class="text-lg font-bold mb-2">Rol Menú</h4>
-                                <div class="flex flex-col gap-2">
-                                    <div v-for="rolMenu in rolesMenu" :key="rolMenu.rol" class="flex items-center">
-                                        <input type="radio" :id="rolMenu.rol" :value="rolMenu.rol" v-model="selectedRolMenu" @change="handleRolMenuChange" class="mr-2">
-                                        <label :for="rolMenu.rol">{{ rolMenu.rol }}</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Menú -->
-                            <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg w-64 max-h-80 overflow-auto" v-if="selectedRolMenu">
-                                <h4 class="text-lg font-bold mb-2">Menú</h4>
-                                <button type="button" @click="toggleMenusSelection" class="px-2 py-1 bg-blue-500 text-white rounded text-sm mb-2 w-full">
-                                    {{ allMenusSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
-                                </button>
-                                <div class="flex flex-col gap-2">
-                                    <div v-for="menu in menus" :key="menu" class="flex items-center">
-                                        <input type="checkbox" :id="menu" :value="menu" v-model="selectedMenus" class="mr-2">
-                                        <label :for="menu">{{ menu }}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Recuadro con información de roles, rol-menu y menús habilitados -->
-                        <div class="w-64 p-4 border border-gray-300 rounded-lg bg-gray-100 max-h-80 overflow-auto">
-                            <h4 class="text-lg font-bold mb-2">Roles</h4>
-                            <div v-if="selectedUsuarioData">
-                                <ul class="list-disc pl-5">
-                                    <li v-for="role in selectedUsuarioData.roles" :key="role">{{ role }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Recuadro con Rol-Menu y Menús Habilitados -->
-                        <div class="w-64 p-4 border border-gray-300 rounded-lg bg-gray-100 max-h-80 overflow-auto">
-                            <h4 class="text-lg font-bold mb-2">Rol-Menu y Menús Habilitados</h4>
-                            <div v-if="selectedUsuarioData">
-                                <div v-for="(menus, rolMenu) in selectedUsuarioData.rolMenus" :key="rolMenu">
-                                    <h5 class="font-bold mt-2">{{ rolMenu }} Menús:</h5>
-                                    <ul class="list-disc pl-5">
-                                        <li v-for="menu in menus.menus" :key="menu">{{ menu }}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-
-                <!-- Botones de acción -->
-                <div class="col-span-4 flex justify-end mt-6 gap-4 items-center">
-                    <!-- Botón de actualizar -->
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded" :disabled="!selectedUsuario">
-                        Actualizar
-                    </button>
-                    <!-- Botón de deshacer cambios -->
-                    <button type="button" @click="resetForm" class="px-4 py-2 bg-gray-500 text-white rounded">
-                        Deshacer Cambios
-                    </button>
-                    <!-- Nota de deshacer cambios -->
-                    <p class="text-yellow-500 ml-4">
-                        Nota: Solo puede deshacer cambios que aún no se han actualizado.
-                    </p>
+            <!-- Cuadro con roles, rol-ruta y rutas habilitadas -->
+            <div class="order-3 md:order-1 flex-1 flex flex-col gap-6">
+              <!-- Contenedor de Roles -->
+              <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg max-h-80 overflow-auto">
+                <h4 class="text-sm font-bold mb-2">Roles</h4>
+                <button type="button" @click="toggleRolesSelection" class="px-2 py-1 bg-blue-500 text-white rounded text-xs mb-2 w-full">
+                  {{ allRolesSelected ? 'Desmarcar Todos' : 'Marcar Todos' }}
+                </button>
+                <div class="flex flex-col gap-2">
+                  <div v-for="role in roles" :key="role" class="flex items-center">
+                    <input type="checkbox" :id="role" :value="role" v-model="selectedRoles" class="mr-2" />
+                    <label :for="role">{{ role }}</label>
+                  </div>
                 </div>
-            </form>
-        </div>
-    </DashboardLayout>
+              </div>
+
+              <!-- Contenedor de Rol-Ruta -->
+              <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg">
+                <h4 class="text-sm font-bold mb-2">Rol-Ruta</h4>
+                <select v-model="selectedRolRuta" @change="handleRolRutaChange" class="p-2 border border-gray-300 rounded w-full">
+                  <option value="" disabled>Seleccione un Rol-Ruta</option>
+                  <option v-for="rolRuta in rolesRuta" :key="rolRuta.rol" :value="rolRuta.rol">
+                    {{ rolRuta.rol }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Contenedor de Rutas -->
+              <div class="bg-gray-100 p-4 border border-gray-300 rounded-lg max-h-80 overflow-auto">
+                <h4 class="text-sm font-bold mb-2">Rutas</h4>
+                <button type="button" @click="toggleRutasSelection" class="px-2 py-1 bg-blue-500 text-white rounded text-xs mb-2 w-full">
+                  {{ allRutasSelected ? 'Desmarcar Todas' : 'Marcar Todas' }}
+                </button>
+                <div class="flex flex-col gap-2">
+                  <div v-for="ruta in rutas" :key="ruta" class="flex items-center">
+                    <input type="checkbox" :id="ruta" :value="ruta" v-model="selectedRutas" class="mr-2" />
+                    <label :for="ruta">{{ ruta }}</label>
+                  </div>
+                </div>
+                <div class="flex gap-4 mt-4">
+                  <button type="button" @click="openCreateRouteModal" class="px-2 py-1 bg-green-500 text-white rounded text-xs w-full">
+                    Crear Ruta
+                  </button>
+                  <button type="button" @click="openEditRouteModal" class="px-2 py-1 bg-yellow-500 text-white rounded text-xs w-full" :disabled="selectedRutas.length !== 1">
+                    Editar Ruta
+                  </button>
+                </div>
+                <p v-if="selectedRutas.length > 1" class="text-red-500 mt-2">
+                  Solo se puede editar una ruta a la vez.
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
+      </form>
+    </div>
+
+    <CreateRouteModal :isOpen="isCreateRouteModalOpen" @close="closeCreateRouteModal" @create="handleCreateRoute" />
+    <EditRouteModal :isOpen="isEditRouteModalOpen" :route="selectedRutas[0]" @close="closeEditRouteModal" @edit="handleEditRoute" />
+  </DashboardLayout>
 </template>
 
 <script setup lang="ts">
-import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
-import { ref, computed, watch } from 'vue';
-import { usuarios, roles, rolesMenu, menus, getUsuarioData, saveUsuarioData } from '@/modules/administrador/dto/myData'; // Ajustar la ruta
+import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue'
+import CreateRouteModal from '../components/CreateRouteModal.vue' // Ajusta la ruta según corresponda
+import EditRouteModal from '../components/EditRouteModal.vue'
 
-const usuarioData = ref(getUsuarioData());
-const selectedUsuario = ref<string | null>(null);
-const selectedRoles = ref<string[]>([]);
-const selectedRolMenu = ref<string | null>(null);
-const selectedMenus = ref<string[]>([]);
-const searchQuery = ref<string>('');
-const changesMade = ref(false);
-const updated = ref(false);
+import { ref, computed, watch } from 'vue'
+import { usuarios, roles, rolesRuta, rutas, getUsuarioData, saveUsuarioData } from '@/modules/administrador/dto/myData' // Ajustar la ruta
+
+const isCreateRouteModalOpen = ref(false)
+const usuarioData = ref(getUsuarioData())
+const selectedUsuario = ref<string | null>(null)
+const selectedRoles = ref<string[]>([])
+const selectedRolRuta = ref<string | null>(null)
+const selectedRutas = ref<string[]>([])
+const searchQuery = ref<string>('')
+const changesMade = ref(false)
+const updated = ref(false)
+const selectedRouteToEdit = ref(null)
+const isEditRouteModalOpen = ref(false)
+
+const isModalOpen = ref(false)
+
+const openEditRouteModal = () => {
+  if (selectedRutas.value.length === 1) {
+    isEditRouteModalOpen.value = true
+  }
+}
+const closeEditRouteModal = () => {
+  isEditRouteModalOpen.value = false
+}
+const handleEditRoute = (updatedRoute: string) => {
+  // Lógica para manejar la edición de rutas
+}
+const openCreateRouteModal = () => {
+  isCreateRouteModalOpen.value = true
+}
+
+const closeCreateRouteModal = () => {
+  isCreateRouteModalOpen.value = false
+}
+
+const handleCreateRoute = (route: any) => {
+  // Aquí puedes manejar la lógica para agregar la nueva ruta
+  console.log('Nueva ruta creada:', route)
+}
 
 // Store the initial state of the form
 const initialState = ref({
-    usuario: selectedUsuario.value,
-    roles: [...selectedRoles.value],
-    rolMenu: selectedRolMenu.value,
-    menus: [...selectedMenus.value],
-});
+  usuario: selectedUsuario.value,
+  roles: [...selectedRoles.value],
+  rolRuta: selectedRolRuta.value,
+  rutas: [...selectedRutas.value]
+})
 
 // Computed property to filter usuarios based on search query
 const filteredUsuarios = computed(() => {
-    if (!searchQuery.value) {
-        return usuarios;
-    }
-    return usuarios.filter(usuario => 
-        usuario.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-});
+  if (!searchQuery.value) {
+    return usuarios
+  }
+  return usuarios.filter((usuario) => usuario.toLowerCase().includes(searchQuery.value.toLowerCase()))
+})
 
 // Watcher to automatically select user if only one match is found
 watch(filteredUsuarios, (newVal) => {
-    if (newVal.length === 1) {
-        selectedUsuario.value = newVal[0];
-        handleUsuarioChange();
-    } else {
-        selectedUsuario.value = null;
-    }
-});
+  if (newVal.length === 1) {
+    selectedUsuario.value = newVal[0]
+    handleUsuarioChange()
+  } else {
+    selectedUsuario.value = null
+  }
+})
 
-// Watcher to clear selected RolMenu if no roles are selected
+// Watcher to clear selected RolRuta if no roles are selected
 watch(selectedRoles, (newRoles) => {
-    if (newRoles.length === 0) {
-        selectedRolMenu.value = null;
-    }
-});
+  if (newRoles.length === 0) {
+    selectedRolRuta.value = null
+  }
+})
 
 // Selected user data to display the current settings
 const selectedUsuarioData = computed(() => {
-    if (selectedUsuario.value) {
-        return usuarioData.value[selectedUsuario.value] || { roles: [], rolMenus: {} };
-    }
-    return null;
-});
+  if (selectedUsuario.value) {
+    return usuarioData.value[selectedUsuario.value] || { roles: [], rolRutas: {} }
+  }
+  return null
+})
 
 const handleUsuarioChange = () => {
-    if (selectedUsuario.value) {
-        const userData = usuarioData.value[selectedUsuario.value];
-        selectedRoles.value = [...userData.roles];
-        selectedRolMenu.value = null;
-        selectedMenus.value = [];
-        changesMade.value = false;
-        updated.value = false;
-    }
-};
+  if (selectedUsuario.value) {
+    // Verifica que `selectedUsuario.value` exista en `usuarioData.value`
+    const userData = usuarioData.value[selectedUsuario.value] || { roles: [], rolRutas: {} }
+    selectedRoles.value = [...userData.roles]
+    selectedRolRuta.value = null
+    selectedRutas.value = []
+    changesMade.value = false
+    updated.value = false
+  }
+}
 
-const handleRolMenuChange = () => {
-    if (selectedRolMenu.value && selectedUsuario.value) {
-        const userData = usuarioData.value[selectedUsuario.value];
-        const rolMenuData = userData.rolMenus[selectedRolMenu.value] || { menus: [] };
-        selectedMenus.value = rolMenuData.menus;
-        changesMade.value = false;
-        updated.value = false;
-    }
-};
+const handleRolRutaChange = () => {
+  if (selectedRolRuta.value && selectedUsuario.value) {
+    const userData = usuarioData.value[selectedUsuario.value]
+    const rolRutaData = userData.rolRutas[selectedRolRuta.value] || { rutas: [] }
+    selectedRutas.value = rolRutaData.rutas
+    changesMade.value = false
+    updated.value = false
+  }
+}
 
 const toggleRolesSelection = () => {
-    if (allRolesSelected.value) {
-        selectedRoles.value = [];
-    } else {
-        selectedRoles.value = [...roles];
-    }
-    changesMade.value = true;
-};
+  if (allRolesSelected.value) {
+    selectedRoles.value = []
+  } else {
+    selectedRoles.value = [...roles]
+  }
+  changesMade.value = true
+}
 
-const toggleMenusSelection = () => {
-    if (allMenusSelected.value) {
-        selectedMenus.value = [];
-    } else {
-        selectedMenus.value = [...menus];
-    }
-    changesMade.value = true;
-};
+const toggleRutasSelection = () => {
+  if (allRutasSelected.value) {
+    selectedRutas.value = []
+  } else {
+    selectedRutas.value = [...rutas]
+  }
+  changesMade.value = true
+}
 
 const submitForm = () => {
-    if (selectedUsuario.value) {
-        const updatedData = {
-            ...usuarioData.value,
-            [selectedUsuario.value]: {
-                roles: selectedRoles.value,
-                rolMenus: {
-                    ...usuarioData.value[selectedUsuario.value]?.rolMenus,
-                    [selectedRolMenu.value || '']: {
-                        menus: selectedMenus.value
-                    }
-                }
-            }
-        };
-        saveUsuarioData(updatedData);
-        changesMade.value = false;
-        updated.value = true;
+  if (selectedUsuario.value) {
+    const updatedData = {
+      ...usuarioData.value,
+      [selectedUsuario.value]: {
+        roles: selectedRoles.value,
+        rolRutas: {
+          ...usuarioData.value[selectedUsuario.value]?.rolRutas,
+          [selectedRolRuta.value || '']: {
+            rutas: selectedRutas.value
+          }
+        }
+      }
     }
-};
+
+    // Guarda los datos en localStorage
+    saveUsuarioData(updatedData)
+
+    // Actualiza el estado del componente
+    usuarioData.value = getUsuarioData() // Vuelve a cargar los datos desde localStorage
+
+    changesMade.value = false
+    updated.value = true
+
+    // Alerta al usuario
+    alert(`Datos de ${selectedUsuario.value} actualizados exitosamente.`)
+  }
+}
 
 const resetForm = () => {
-    if (selectedUsuario.value) {
-        const originalData = usuarioData.value[selectedUsuario.value] || { roles: [], rolMenus: {} };
-        selectedRoles.value = [...originalData.roles];
-        selectedRolMenu.value = null;
-        selectedMenus.value = [];
-        changesMade.value = false;
-    }
-};
+  if (selectedUsuario.value) {
+    const originalData = usuarioData.value[selectedUsuario.value] || { roles: [], rolRutas: {} }
+    selectedRoles.value = [...originalData.roles]
+    selectedRolRuta.value = null
+    selectedRutas.value = []
+    changesMade.value = false
+  }
+}
 
+// Computed properties
 const allRolesSelected = computed(() => {
-    return roles.length > 0 && selectedRoles.value.length === roles.length;
-});
+  return roles.length > 0 && selectedRoles.value.length === roles.length
+})
 
-const allMenusSelected = computed(() => {
-    return menus.length > 0 && selectedMenus.value.length === menus.length;
-});
+// Computed properties
+const allRutasSelected = computed(() => {
+  return rutas.length > 0 && selectedRutas.value.length === rutas.length
+})
 </script>
-
-<style scoped>
-/* Estilos adicionales aquí */
-</style>

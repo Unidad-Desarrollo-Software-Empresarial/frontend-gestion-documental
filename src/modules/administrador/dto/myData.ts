@@ -4,14 +4,14 @@ export const usuarios = ['Usuario 1', 'Usuario 2', 'Usuario 3', 'Usuario 4'];
 
 export const roles = ['Administrador', 'Editor', 'Usuario', 'Invitado'];
 
-export const rolesMenu = [
-    { rol: 'Menu 1' },
-    { rol: 'Menu 2' },
-    { rol: 'Menu 3' },
-    { rol: 'Menu 4' }
+export const rolesRuta = [
+    { rol: 'Ruta 1' },
+    { rol: 'Ruta 2' },
+    { rol: 'Ruta 3' },
+    { rol: 'Ruta 4' }
 ];
 
-export const menus = ['Dashboard', 'Settings', 'Profile', 'Help'];
+export const rutas = ['Dashboard', 'Settings', 'Profile', 'Help'];
 
 export const getUsuarioData = () => {
     const data = localStorage.getItem('usuarioData');
@@ -21,3 +21,4 @@ export const getUsuarioData = () => {
 export const saveUsuarioData = (data: Record<string, any>) => {
     localStorage.setItem('usuarioData', JSON.stringify(data));
 };
+
