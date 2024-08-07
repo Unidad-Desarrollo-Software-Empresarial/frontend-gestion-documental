@@ -11,5 +11,5 @@ export const mockData: Expediente[] = [
   { numeracion: '8', serie: 'Serie H', subserie: 'Subserie H1', descripcion: 'Descripción de la subserie H1', origen: 'Electrónico', condiciones: 'Reservado', period: '2024-2025' },
   { numeracion: '9', serie: 'Serie I', subserie: 'Subserie I1', descripcion: 'Descripción de la subserie I1', origen: 'Digital', condiciones: 'Público', period: '2024-2025' },
   { numeracion: '10', serie: 'Serie J', subserie: 'Subserie J1', descripcion: 'Descripción de la subserie J1', origen: 'Físico', condiciones: 'Confidencial', period: '2024-2025' },
-  { numeracion: '11', serie: 'Serie K', subserie: 'Subserie K1', descripcion: 'Descripción de la subserie K1', origen: 'Híbrido', condiciones: 'Público', period: '2024-2025' },
+  { numeracion: '1005421704', serie: 'Serie K', subserie: 'Subserie K1', descripcion: 'Descripción de la subserie K1', origen: 'Híbrido', condiciones: 'Público', period: '2024-2025' },
 ];
