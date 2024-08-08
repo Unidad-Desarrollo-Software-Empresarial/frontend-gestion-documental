@@ -34,13 +34,13 @@ const itemUpdate = ref()
 
 const isOpenModal = ref(false)
 
-onMounted(() => {
-    dataTipoPractica.value = query.data.value
-})
+// onMounted(() => {
+//     dataTipoPractica.value = query.data.value
+// })
 
-watchEffect(() => {
-    dataTipoPractica.value = query.data.value
-})
+// watchEffect(() => {
+//     dataTipoPractica.value = query.data.value
+// })
 
 watch(itemUpdate, (newValue) => {
     console.log('itemUpdate', newValue)

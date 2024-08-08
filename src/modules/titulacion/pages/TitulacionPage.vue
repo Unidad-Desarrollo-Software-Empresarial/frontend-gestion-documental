@@ -1,5 +1,5 @@
 import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
-<template>
+ <template>
     <DashboardLayout>
         <div>
             <p>Esta es la Titulacion Page</p>
@@ -39,4 +39,7 @@ import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
 
 <style scoped>
 
-</style>
+</style> 
+
+
+  
