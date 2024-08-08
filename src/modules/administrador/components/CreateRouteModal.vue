@@ -16,15 +16,16 @@
         </div>
 
         <!-- Ruta Padre -->
-        <div class="mb-3">
-          <label class="block text-gray-700 font-bold mb-2 text-sm">Ruta Padre</label>
-          <select v-model="selectedParentRoute" class="p-2 border border-gray-300 rounded w-full text-sm" required>
-            <option value="" disabled>Seleccione una Ruta Padre</option>
-            <option v-for="ruta in rutas" :key="ruta" :value="ruta">
-              {{ ruta }}
-            </option>
-          </select>
-        </div>
+<div class="mb-3">
+  <label class="block text-gray-700 font-bold mb-2 text-sm">Ruta Padre</label>
+  <select v-model="selectedParentRoute" class="p-2 border border-gray-300 rounded w-full text-sm" required>
+    <option value="" disabled>Seleccione una Ruta Padre</option>
+    <option v-for="ruta in rutas.filter(r => r.value === 0)" :key="ruta.name" :value="ruta.name">
+      {{ ruta.name }}
+    </option>
+  </select>
+</div>
+
 
         <!-- Componente -->
         <div class="mb-3">

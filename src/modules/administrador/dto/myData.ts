@@ -11,7 +11,17 @@ export const rolesRuta = [
     { rol: 'Ruta 4' }
 ];
 
-export const rutas = ['Dashboard', 'Settings', 'Profile', 'Help'];
+// Definimos rutas con valor asociado
+export const rutas = [
+    { name: 'Dashboard', value: 0 },
+    { name: 'Settings', value: 0 },
+    { name: 'Profile', value: 0 },
+    { name: 'Help', value: 0 },
+    { name: 'User Management', value: 1 },  // Hija de Dashboard
+    { name: 'System Settings', value: 2 },  // Hija de Settings
+    { name: 'User Profile', value: 3 },     // Hija de Profile
+    { name: 'Help Center', value: 4 }       // Hija de Help
+];
 
 export const getUsuarioData = () => {
     const data = localStorage.getItem('usuarioData');
@@ -21,4 +31,3 @@ export const getUsuarioData = () => {
 export const saveUsuarioData = (data: Record<string, any>) => {
     localStorage.setItem('usuarioData', JSON.stringify(data));
 };
-

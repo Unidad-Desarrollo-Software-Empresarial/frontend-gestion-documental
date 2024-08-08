@@ -93,26 +93,45 @@
                   {{ allRutasSelected ? 'Desmarcar Todas' : 'Marcar Todas' }}
                 </button>
                 <div class="flex flex-col gap-2">
-                  <div v-for="ruta in rutas" :key="ruta" class="flex items-center">
-                    <input type="checkbox" :id="ruta" :value="ruta" v-model="selectedRutas" class="mr-2" />
-                    <label :for="ruta">{{ ruta }}</label>
+                  <div v-for="ruta in rutas.filter((r) => r.value !== 0)" :key="ruta.name" class="flex items-center">
+                    <input type="checkbox" :id="ruta.name" :value="ruta.name" v-model="selectedRutas" class="mr-2" />
+                    <label :for="ruta.name">{{ ruta.name }}</label>
                   </div>
                 </div>
+
                 <div class="flex gap-4 mt-4">
                   <button type="button" @click="openCreateRouteModal" class="px-2 py-1 bg-green-500 text-white rounded text-xs w-full">
                     Crear Ruta
                   </button>
-                  <button type="button" @click="openEditRouteModal" class="px-2 py-1 bg-yellow-500 text-white rounded text-xs w-full" :disabled="selectedRutas.length !== 1">
+                  <button
+                    type="button"
+                    @click="openEditRouteModal"
+                    class="px-2 py-1 bg-yellow-500 text-white rounded text-xs w-full"
+                    :disabled="selectedRutas.length !== 1"
+                  >
                     Editar Ruta
                   </button>
                 </div>
-                <p v-if="selectedRutas.length > 1" class="text-red-500 mt-2">
-                  Solo se puede editar una ruta a la vez.
-                </p>
+                <p v-if="selectedRutas.length > 1" class="text-red-500 mt-2">Solo se puede editar una ruta a la vez.</p>
               </div>
             </div>
           </div>
         </template>
+        <!-- Botones de acción -->
+        <div class="col-span-4 flex justify-end mt-6 gap-4 items-center">
+                    <!-- Botón de actualizar -->
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded" :disabled="!selectedUsuario">
+                        Actualizar
+                    </button>
+                    <!-- Botón de deshacer cambios -->
+                    <button type="button" @click="resetForm" class="px-4 py-2 bg-gray-500 text-white rounded">
+                        Deshacer Cambios
+                    </button>
+                    <!-- Nota de deshacer cambios -->
+                    <p class="text-yellow-500 ml-4">
+                        Nota: Solo puede deshacer cambios que aún no se han actualizado.
+                    </p>
+                </div>
       </form>
     </div>
 
@@ -122,12 +141,11 @@
 </template>
 
 <script setup lang="ts">
-import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue'
-import CreateRouteModal from '../components/CreateRouteModal.vue' // Ajusta la ruta según corresponda
-import EditRouteModal from '../components/EditRouteModal.vue'
-
 import { ref, computed, watch } from 'vue'
-import { usuarios, roles, rolesRuta, rutas, getUsuarioData, saveUsuarioData } from '@/modules/administrador/dto/myData' // Ajustar la ruta
+import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue'
+import CreateRouteModal from '../components/CreateRouteModal.vue'
+import EditRouteModal from '../components/EditRouteModal.vue'
+import { usuarios, roles, rolesRuta, rutas, getUsuarioData, saveUsuarioData } from '@/modules/administrador/dto/myData'
 
 const isCreateRouteModalOpen = ref(false)
 const usuarioData = ref(getUsuarioData())
@@ -140,20 +158,35 @@ const changesMade = ref(false)
 const updated = ref(false)
 const selectedRouteToEdit = ref(null)
 const isEditRouteModalOpen = ref(false)
+const initialState = ref<any>({})  // To store initial state
 
 const isModalOpen = ref(false)
+
+const editSelectedRoute = () => {
+  if (selectedRutas.value.length === 1) {
+    const routeToEdit = selectedRutas.value[0]
+    console.log('Editando ruta:', routeToEdit)
+  } else if (selectedRutas.value.length > 1) {
+    alert('Solo puede editar una ruta a la vez.')
+  } else {
+    alert('Seleccione una ruta para editar.')
+  }
+}
 
 const openEditRouteModal = () => {
   if (selectedRutas.value.length === 1) {
     isEditRouteModalOpen.value = true
   }
 }
+
 const closeEditRouteModal = () => {
   isEditRouteModalOpen.value = false
 }
+
 const handleEditRoute = (updatedRoute: string) => {
   // Lógica para manejar la edición de rutas
 }
+
 const openCreateRouteModal = () => {
   isCreateRouteModalOpen.value = true
 }
@@ -163,17 +196,22 @@ const closeCreateRouteModal = () => {
 }
 
 const handleCreateRoute = (route: any) => {
-  // Aquí puedes manejar la lógica para agregar la nueva ruta
   console.log('Nueva ruta creada:', route)
 }
 
 // Store the initial state of the form
-const initialState = ref({
-  usuario: selectedUsuario.value,
-  roles: [...selectedRoles.value],
-  rolRuta: selectedRolRuta.value,
-  rutas: [...selectedRutas.value]
-})
+const storeInitialState = () => {
+  if (selectedUsuario.value) {
+    const userData = usuarioData.value[selectedUsuario.value] || { roles: [], rolRutas: {} }
+    initialState.value = {
+      roles: [...userData.roles],
+      rolRuta: selectedRolRuta.value,
+      rutas: [...selectedRutas.value]
+    }
+  }
+}
+
+storeInitialState()
 
 // Computed property to filter usuarios based on search query
 const filteredUsuarios = computed(() => {
@@ -197,6 +235,7 @@ watch(filteredUsuarios, (newVal) => {
 watch(selectedRoles, (newRoles) => {
   if (newRoles.length === 0) {
     selectedRolRuta.value = null
+    selectedRutas.value = [] // Clear rutas if no roles are selected
   }
 })
 
@@ -210,13 +249,13 @@ const selectedUsuarioData = computed(() => {
 
 const handleUsuarioChange = () => {
   if (selectedUsuario.value) {
-    // Verifica que `selectedUsuario.value` exista en `usuarioData.value`
     const userData = usuarioData.value[selectedUsuario.value] || { roles: [], rolRutas: {} }
     selectedRoles.value = [...userData.roles]
     selectedRolRuta.value = null
     selectedRutas.value = []
     changesMade.value = false
     updated.value = false
+    storeInitialState()
   }
 }
 
@@ -243,12 +282,24 @@ const toggleRutasSelection = () => {
   if (allRutasSelected.value) {
     selectedRutas.value = []
   } else {
-    selectedRutas.value = [...rutas]
+    selectedRutas.value = rutas.filter((r) => r.value !== 0).map((r) => r.name)
   }
   changesMade.value = true
 }
 
 const submitForm = () => {
+  if (selectedRoles.value.length === 0) {
+    alert('Debe seleccionar al menos un rol antes de actualizar.')
+    return
+  }
+
+  if (selectedRolRuta.value) {
+    if (selectedRutas.value.length === 0) {
+      alert('Debe seleccionar al menos una ruta después de seleccionar una Rol-Ruta.')
+      return
+    }
+  }
+
   if (selectedUsuario.value) {
     const updatedData = {
       ...usuarioData.value,
@@ -263,27 +314,24 @@ const submitForm = () => {
       }
     }
 
-    // Guarda los datos en localStorage
     saveUsuarioData(updatedData)
-
-    // Actualiza el estado del componente
-    usuarioData.value = getUsuarioData() // Vuelve a cargar los datos desde localStorage
-
+    usuarioData.value = getUsuarioData()
     changesMade.value = false
     updated.value = true
 
-    // Alerta al usuario
     alert(`Datos de ${selectedUsuario.value} actualizados exitosamente.`)
   }
 }
 
 const resetForm = () => {
   if (selectedUsuario.value) {
-    const originalData = usuarioData.value[selectedUsuario.value] || { roles: [], rolRutas: {} }
-    selectedRoles.value = [...originalData.roles]
-    selectedRolRuta.value = null
-    selectedRutas.value = []
-    changesMade.value = false
+    if (confirm('¿Estás seguro de que deseas deshacer los cambios?')) {
+      const userInitialData = initialState.value
+      selectedRoles.value = [...userInitialData.roles]
+      selectedRolRuta.value = userInitialData.rolRuta
+      selectedRutas.value = [...userInitialData.rutas]
+      changesMade.value = false
+    }
   }
 }
 
@@ -292,8 +340,8 @@ const allRolesSelected = computed(() => {
   return roles.length > 0 && selectedRoles.value.length === roles.length
 })
 
-// Computed properties
 const allRutasSelected = computed(() => {
   return rutas.length > 0 && selectedRutas.value.length === rutas.length
 })
 </script>
+
