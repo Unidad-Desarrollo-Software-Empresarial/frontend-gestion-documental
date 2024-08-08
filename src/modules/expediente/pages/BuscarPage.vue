@@ -4,7 +4,9 @@
     <header class="mb-6">
       <h1 class="text-xl md:text-2xl font-normal dark:text-white">
         Expediente
-        <small class="ms-2 text-sm md:text-lg text-gray-400 dark:text-gray-300">- Cuadro General De Clasificación Documental</small>
+        <small class="ms-2 text-sm md:text-lg text-gray-400 dark:text-gray-300">
+          - Cuadro General De Clasificación Documental
+        </small>
       </h1>
     </header>
 
@@ -23,10 +25,10 @@
       <!-- Selector de Período -->
       <CustomPeriodSelector 
         :periods="filteredPeriods" 
-        :modelValue="selectedPeriod" 
-        @update-modelValue="updatePeriod" 
+        :modelValue="selectedPeriods" 
+        @update:modelValue="updateSelectedPeriods" 
       />
-      
+
       <!-- Gestión de Columnas -->
       <ColumnVisibilityManager 
         :columns="columns" 
@@ -34,14 +36,26 @@
         class="mb-4 md:mb-6" 
       />
 
-      <!-- Acordeón que Contiene la Tabla de Datos -->
+      <!-- Acordeón de Períodos -->
       <CustomAccordion title="Detalles del Expediente">
-        <CustomDataTable 
-          :data="paginatedItems" 
-          :columns="columns" 
-          :actionsVisible="true" 
-          @edit-item="openEditModal" 
-        />
+        <template v-if="selectedPeriods.includes('Todos')">
+          <CustomAccordion v-for="period in filteredPeriods" :key="period" :title="period">
+            <CustomDataTable 
+              :data="paginatedItemsByPeriod(period)" 
+              :columns="columns" 
+              :actionsVisible="true" 
+              @edit-item="openEditModal"
+            />
+          </CustomAccordion>
+        </template>
+        <template v-else>
+          <CustomDataTable 
+            :data="paginatedItems" 
+            :columns="columns" 
+            :actionsVisible="true" 
+            @edit-item="openEditModal"
+          />
+        </template>
 
         <!-- Paginación -->
         <div class="flex flex-wrap justify-center mt-4 md:mt-6">
@@ -109,21 +123,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue'
-import CustomAccordion from '../components/CustomAccordion.vue'
-import CustomDataTable from '../components/CustomDataTable.vue'
-import CustomPeriodSelector from '../components/CustomPeriodSelector.vue'
-import EditModal from '../components/CustomEditModal.vue'
-import ColumnVisibilityManager from '../components/ColumnVisibilityManager.vue'
-import { mockData } from '../utils/mockData'
-import type { Expediente } from '../types/expediente'
-import usePagination from '../composables/usePagination'
+import { ref, computed, watch, onMounted } from 'vue';
+import DashboardLayout from '@/modules/dashboard/layouts/DashboardLayout.vue';
+import CustomAccordion from '../components/CustomAccordion.vue';
+import CustomDataTable from '../components/CustomDataTable.vue';
+import CustomPeriodSelector from '../components/CustomPeriodSelector.vue';
+import EditModal from '../components/CustomEditModal.vue';
+import ColumnVisibilityManager from '../components/ColumnVisibilityManager.vue';
+import { mockData } from '../utils/mockData';
+import type { Expediente } from '../types/expediente';
+import usePagination from '../composables/usePagination';
 
 // Datos y estado
-const selectedPeriod = ref<string>('')
-const searchQuery = ref('') // Estado para la búsqueda en tiempo real
-const data = ref<Expediente[]>(mockData)
+const selectedPeriods = ref<string[]>(['Todos']);
+const searchQuery = ref('');
+const data = ref<Expediente[]>(mockData);
 
 // Definición de columnas de la tabla
 const columns = ref([
@@ -133,85 +147,95 @@ const columns = ref([
   { name: 'descripcion', label: 'Descripción Subserie Documental', visible: true },
   { name: 'origen', label: 'Origen', visible: true },
   { name: 'condiciones', label: 'Condiciones de Acceso', visible: true }
-])
+]);
 
 // Computación de datos filtrados según el período seleccionado y la búsqueda
 const filteredData = computed(() => {
   return data.value
-    .filter((item) => item.period === selectedPeriod.value)
+    .filter((item) => selectedPeriods.value.includes('Todos') || selectedPeriods.value.includes(item.period))
     .filter((item) => {
-      const query = searchQuery.value.toLowerCase()
-      return Object.values(item).some(value => value.toString().toLowerCase().includes(query))
-    })
-})
+      const query = searchQuery.value.toLowerCase();
+      return Object.values(item).some(value => value.toString().toLowerCase().includes(query));
+    });
+});
 
 // Computación de periodos únicos
 const filteredPeriods = computed(() => {
-  return Array.from(new Set(data.value.map((item) => item.period))).sort().reverse()
-})
+  return Array.from(new Set(data.value.map((item) => item.period))).sort().reverse();
+});
 
 // Paginación
-const currentPage = ref(1)
-const rowsPerPage = ref(2)
-const { paginatedItems, nextPage, previousPage, totalPages } = usePagination(filteredData, currentPage, rowsPerPage)
+const currentPage = ref(1);
+const rowsPerPage = ref(2); // Ajusta el número de filas por página si es necesario
+const { paginatedItems, nextPage, previousPage, totalPages } = usePagination(filteredData, currentPage, rowsPerPage);
+
+// Paginación por período
+const paginatedItemsByPeriod = (period: string) => {
+  const periodData = filteredData.value.filter(item => item.period === period);
+  const { paginatedItems } = usePagination(ref(periodData), currentPage, rowsPerPage);
+  return paginatedItems.value; // Accede al valor del `ComputedRef`
+};
 
 // Modal de edición
-const isModalVisible = ref(false)
-const selectedExpediente = ref<Expediente | null>(null)
+const isModalVisible = ref(false);
+const selectedExpediente = ref<Expediente | null>(null);
 
 // Función para manejar la edición de elementos
 const openEditModal = (id: string) => {
-  selectedExpediente.value = data.value.find((exp) => exp.numeracion === id) || null
-  isModalVisible.value = true
-}
+  selectedExpediente.value = data.value.find((exp) => exp.numeracion === id) || null;
+  isModalVisible.value = true;
+};
 
 // Función para actualizar un expediente
 const updateExpediente = (expediente: Expediente) => {
-  const index = data.value.findIndex((item) => item.numeracion === expediente.numeracion)
+  const index = data.value.findIndex((item) => item.numeracion === expediente.numeracion);
   if (index !== -1) {
-    data.value[index] = expediente
+    data.value[index] = expediente;
   }
-}
+};
 
 // Función para cerrar el modal
 const closeModal = () => {
-  isModalVisible.value = false
-}
+  isModalVisible.value = false;
+};
 
-// Función para actualizar el período seleccionado
-const updatePeriod = (period: string) => {
-  selectedPeriod.value = period
-  currentPage.value = 1 // Restablece la página actual a 1 al cambiar el período
-}
+// Función para actualizar los períodos seleccionados
+const updateSelectedPeriods = (periods: string[]) => {
+  if (periods.includes('Todos') && periods.length > 1) {
+    periods = ['Todos'];
+  }
+  selectedPeriods.value = periods;
+  currentPage.value = 1; // Restablece la página actual a 1 al cambiar los períodos
+};
 
 // Función para actualizar la visibilidad de las columnas
 const updateColumnVisibility = (updatedColumns: Array<{ name: string; label: string; visible: boolean }>) => {
-  columns.value = updatedColumns
-}
+  columns.value = updatedColumns;
+};
 
 // Función para ir a la primera página
 const goToFirstPage = () => {
-  currentPage.value = 1
-}
+  currentPage.value = 1;
+};
 
 // Función para ir a la última página
 const goToLastPage = () => {
-  currentPage.value = totalPages.value
-}
+  currentPage.value = totalPages.value;
+};
 
 // Observa cambios en los datos filtrados para manejar el caso de datos vacíos
 watch(filteredData, (newData) => {
   if (newData.length === 0) {
-    currentPage.value = 1
+    currentPage.value = 1;
   }
-})
+});
 
-// Configura el período seleccionado inicialmente si hay datos
+// Configura los períodos seleccionados inicialmente si hay datos
 onMounted(() => {
   if (filteredPeriods.value.length > 0) {
-    selectedPeriod.value = filteredPeriods.value[0]
+    selectedPeriods.value = ['Todos'];
   }
-})
+});
 </script>
 
 <style scoped>

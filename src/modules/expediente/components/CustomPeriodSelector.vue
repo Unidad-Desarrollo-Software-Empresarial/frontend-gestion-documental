@@ -8,7 +8,7 @@
         @click="toggleDropdown" 
         class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        {{ selectedPeriod }} <!-- Muestra el texto seleccionado o un texto por defecto -->
+        {{ selectedPeriods.length ? selectedPeriods.join(', ') : 'Seleccionar Período' }} <!-- Muestra los períodos seleccionados -->
         <svg 
           class="w-2 h-2 ml-5 transition-transform duration-300" 
           :class="{ 'rotate-180': isOpen }" 
@@ -34,10 +34,17 @@
       >
         <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
           <li 
+            @click="selectPeriod('Todos')"
+            class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+          >
+            <span>Todos</span>
+          </li>
+          <li 
             v-for="(period, index) in periods" 
             :key="index"
-            class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
             @click="selectPeriod(period)"
+            :class="{ 'bg-gray-100 dark:bg-gray-700': selectedPeriods.includes(period) }"
+            class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
           >
             <span>{{ period }}</span>
           </li>
@@ -52,14 +59,14 @@ import { ref, defineProps, defineEmits, watch, onMounted, onUnmounted } from 'vu
 
 const props = defineProps<{
   periods: string[];
-  modelValue: string;
+  modelValue: string[];
 }>();
 
 const emit = defineEmits<{
-  (e: 'update-modelValue', period: string): void;
+  (e: 'update-modelValue', periods: string[]): void;
 }>();
 
-const selectedPeriod = ref(props.modelValue);
+const selectedPeriods = ref<string[]>(props.modelValue);
 const isOpen = ref(false);
 const dropdown = ref<HTMLElement | null>(null);
 
@@ -67,15 +74,42 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
+const updateSelectedPeriods = (newSelection: string[]) => {
+  // If the new selection includes all periods (excluding "Todos"), select "Todos"
+  if (newSelection.length === props.periods.length) {
+    selectedPeriods.value = ['Todos'];
+  } else {
+    selectedPeriods.value = newSelection;
+  }
+
+  // Emit the updated selection
+  emit('update-modelValue', selectedPeriods.value);
+};
+
 const selectPeriod = (period: string) => {
-  selectedPeriod.value = period;
-  emit('update-modelValue', period);
+  if (period === 'Todos') {
+    selectedPeriods.value = ['Todos'];
+  } else {
+    // If "Todos" is selected, deselect it
+    if (selectedPeriods.value.includes('Todos')) {
+      selectedPeriods.value = [period];
+    } else {
+      // Add or remove the selected period
+      const newSelection = selectedPeriods.value.includes(period)
+        ? selectedPeriods.value.filter(p => p !== period)
+        : [...selectedPeriods.value, period];
+
+      updateSelectedPeriods(newSelection);
+    }
+  }
+
+  // Close the dropdown
   isOpen.value = false;
 };
 
-// Watch for changes in the props.modelValue to keep the selectedPeriod in sync
+// Watch for changes in the props.modelValue to keep the selectedPeriods in sync
 watch(() => props.modelValue, (newValue) => {
-  selectedPeriod.value = newValue;
+  selectedPeriods.value = newValue;
 });
 
 // Handle click outside of the dropdown to close it
